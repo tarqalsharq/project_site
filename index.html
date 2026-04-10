@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة المشاريع | امتحان مشترك</title>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #3b82f6;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --light: #f3f4f6;
+            --dark: #1f2937;
+            --bg: #e5e7eb;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 0; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+        body { background-color: var(--bg); color: var(--dark); line-height: 1.6; padding-bottom: 30px; }
+
+        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 2rem 1rem; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; margin-bottom: 25px; }
+        header h1 { font-size: 2.5rem; margin-bottom: 5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        header h3 { font-size: 1.3rem; font-weight: normal; opacity: 0.9; }
+
+        .container { display: flex; flex-direction: column; padding: 0 15px; max-width: 900px; margin: 0 auto; gap: 15px; }
+
+        /* Home View Styles */
+        #home-view { display: block; }
+        .controls-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; }
+        @media(min-width: 600px) { .controls-grid { grid-template-columns: 1fr 1fr; } }
+        
+        .btn-main { padding: 18px; background: white; border: 2px solid var(--secondary); border-radius: 12px; color: var(--secondary); font-weight: bold; cursor: pointer; text-align: center; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
+        .btn-main:hover, .btn-main:active { background: var(--secondary); color: white; transform: translateY(-3px); }
+        
+        .custom-test-box { background: white; padding: 20px; border-radius: 12px; border: 1px solid #d1d5db; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .custom-test-box label { font-weight: bold; display: block; margin-bottom: 10px; color: var(--primary); }
+        .custom-test-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #9ca3af; border-radius: 8px; font-size: 1rem; text-align: center; }
+        .custom-test-box button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; }
+
+        /* Quiz View Styles */
+        #quiz-view { display: none; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; position: sticky; top: 10px; z-index: 100; gap:     10px; }
+        .btn-back { background: var(--dark); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 1rem; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.2); cursor: pointer; }
+        .btn-finish { background: var(--danger); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 1rem; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.2); cursor: pointer; }
+        
+        .math-filters-container { display: none; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; padding: 10px; background: white; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; }
+              .math-filter-btn { 
+            padding: 8px 12px; 
+            border: 1px solid var(--secondary); 
+            background: white; 
+            color: var(--secondary); 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 0.95rem; 
+            flex: 1; 
+            min-width: 100px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            transition: 0.2s; 
+        }
+           .math-filter-btn { 
+            padding: 10px 5px; 
+            border: 1px solid var(--secondary); 
+            background: white; 
+            color: var(--secondary); 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 0.95rem; 
+            flex: 1; 
+            min-width: 100px; 
+            text-align: center; /* لإبقاء النص في الوسط كما كان قديماً */
+            transition: 0.4s; 
+            position: relative; /* ضروري لضبط مكان الإشعار */
+        }
+        .math-filter-btn.active-filter { 
+            background: var(--secondary); 
+            color: white; 
+        }
+        .cat-badge {
+            position: absolute;
+            top: -6px; /* رفعه للأعلى قليلاً */
+            right: -6px; /* وضعه في الزاوية اليمنى */
+            background-color: var(--primary); /* لون أزرق داكن احترافي */
+            color: white;
+            font-size: 0.7rem; /* حجم خط صغير جداً */
+            padding: 2px 5px;
+            border-radius: 6px;
+            border: 1px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            line-height: 1.2;
+            font-weight: bold;
+        }
+        .math-filter-btn.active-filter .cat-badge {
+            background-color: white;
+            color: var(--primary);
+        }
+ }
+
+        /* Questions */
+        .question-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-top: 4px solid var(--secondary); }
+        .q-text-container { padding: 15px; border-radius: 10px; background: #f8fafc; border: 1px solid #e2e8f0; margin-bottom: 15px; font-size: 1.15rem; font-weight: bold; direction: ltr; text-align: left; transition: 0.3s; min-height: 80px; display: flex; align-items: center; }
+        .q-text-container.highlight-trans { background: #e0e7ff; border-color: var(--secondary); direction: rtl; text-align: right; }
+        
+        .options-list { list-style: none; direction: ltr; margin-bottom: 15px; }
+        .option-item { padding: 14px 15px; margin-bottom: 10px; background: var(--light); border: 2px solid #d1d5db; border-radius: 8px; font-size: 1.1rem; text-align: left; transition: 0.2s; cursor: pointer; }
+        .option-item.correct { background: var(--success) !important; color: white; border-color: var(--success); }
+        .option-item.incorrect { background: var(--danger) !important; color: white; border-color: var(--danger); }
+        .option-item.hidden { display: none !important; }
+        .option-item.disabled { cursor: not-allowed; opacity: 0.9; }
+
+        /* Action Buttons */
+        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; border-top: 1px solid #e5e7eb; padding-top: 15px; }
+        .action-btn { flex: 1; min-width: 110px; padding: 12px 5px; border: none; border-radius: 8px; font-weight: bold; color: white; font-size: 0.95rem; transition: 0.2s; text-align: center; }
+        .action-btn:disabled { background: #9ca3af !important; opacity: 0.7; cursor: not-allowed; }
+        .btn-translate { background: #8b5cf6; }
+        .btn-explain { background: var(--accent); }
+        .btn-solve { background: var(--success); }
+
+        /* Solution Area (Fixed RTL alignment) */
+        .solution-box { display: none; margin-top: 15px; padding: 15px; background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 10px; }
+        .sol-title { color: var(--primary); font-weight: bold; border-bottom: 2px solid #93c5fd; padding-bottom: 5px; margin-bottom: 10px; font-size: 1.1rem; }
+        .sol-content-ar { direction: rtl; text-align: right; font-size: 1rem; color: #374151; margin-bottom: 15px;}
+        .sol-content { direction: rtl; text-align: right; font-size: 1.1rem; overflow-x: auto; padding: 5px; } /* تعديل لجعل النصوص العربية صحيحة */
+        
+        /* Modal (نافذة الشرح المنبثقة) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center; padding: 15px; }
+        .modal-content { background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; animation: slideDown 0.3s ease-out; }
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { font-size: 1.3rem; font-weight: bold; color: var(--accent); border-bottom: 2px solid #fde68a; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .modal-body { font-size: 1.1rem; line-height: 1.8; color: var(--dark); text-align: right; direction: rtl; }
+        .modal-close-btn { margin-top: 20px; width: 100%; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
+
+        /* Footer */
+        footer { margin-top: 40px; text-align: center; color: #6b7280; font-size: 0.9rem; border-top: 1px solid #d1d5db; padding-top: 20px; }
+        .designer-name { font-weight: bold; color: var(--primary); font-size: 1.1rem; }
+        .contact-info-hidden { display: none; }
+        .MathJax { font-size: 1.1em !important; }
+        
+                /* تصميم زر التليجرام */
+        .telegram-container { margin-bottom: 20px; }
+        .btn-telegram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #0088cc, #00aaff); /* ألوان التليجرام الرسمية */
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.15rem;
+            box-shadow: 0 4px 6px rgba(0, 136, 204, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+        }
+        .btn-telegram:hover, .btn-telegram:active {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 136, 204, 0.4);
+            color: white;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>إدارة المشاريع</h1>
+        <h3>امتحان مشترك - فصل الثاني</h3>
+    </header>
+
+    <div class="container">
+        <div id="home-view">
+            <div class="controls-grid">
+                <button class="btn-main" onclick="loadSection('bank')">📚 بنك الأسئلة (كامل)</button>
+                <button class="btn-main" onclick="loadSection('bank-math')">🧮 بنك المسائل الحسابية (مصنف)</button>
+                <button class="btn-main" onclick="loadSection('test', 125)">📝 اختبار شامل (125 سؤال)</button>
+                <button class="btn-main" onclick="loadSection('test-theory')">📖 اختبار الأسئلة الشرحية</button>
+            </div>
+                        <div class="telegram-container">
+                <a href="https://t.me/dx3ee" target="_blank" class="btn-telegram">
+                    ✈️ انضم لكروب على قنات تليگرام
+                </a>
+            </div>
+
+
+            <div class="custom-test-box">
+                <label>اختبار عشوائي (حدد العدد):</label>
+                <input type="number" id="random-num" placeholder="مثلاً: 25">
+                <button onclick="startCustomRandom()">ابدأ الاختبار العشوائي</button>
+            </div>
+
+            <div class="custom-test-box">
+                <label>اختبار نطاق محدد (من سؤال - إلى سؤال):</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="number" id="range-start" placeholder="من (مثال: 1)">
+                    <input type="number" id="range-end" placeholder="إلى (مثال: 20)">
+                </div>
+                <button onclick="startCustomRange()">ابدأ اختبار النطاق</button>
+            </div>
+            
+                   <footer>
+                <p style="margin-bottom: 10px;">تصميم وتطوير:</p>
+                
+                <p class="designer-name" style="line-height: 1.8;">
+                    طارق احمد سعيد<br>
+                    ابراهيم محمود حسين<br>
+                    علي حمد صالح
+                </p>
+                
+                <div class="contact-info-hidden">
+                    <p>Telegram: t.me/nigacosmetic</p>
+                    <p>Phone: 07700322891</p>
+                </div>
+            </footer>
+
+        </div>
+
+        <div id="quiz-view">
+            <div class="top-bar">
+                <button class="btn-back" onclick="goHome()">🔙 رجوع للرئيسية</button>
+                <button id="btn-finish-test" class="btn-finish" onclick="finishTest()">🏁 إنهاء الاختبار</button>
+            </div>
+            
+            <div id="math-filters" class="math-filters-container">
+                <button class="math-filter-btn active-filter" onclick="filterMathCategory('All')">الكل</button>
+                <button class="math-filter-btn" onclick="filterMathCategory('BEP')">نقطة التعادل والربح (BEP)</button>
+                <button class="math-filter-btn" onclick="filterMathCategory('EOQ')">المخزون والكمية (EOQ)</button>
+                <button class="math-filter-btn" onclick="filterMathCategory('LP')">البرمجة الخطية (LP)</button>
+                <button class="math-filter-btn" onclick="filterMathCategory('Maintenance')">حسابات الصيانة (Maintenance)</button>
+                <button class="math-filter-btn" onclick="filterMathCategory('Machine')">مقارنة المكائن (Machine)</button>
+            </div>
+
+            <div id="score-tracker" class="score-tracker">
+                النتيجة الحية: <span id="correct-score" class="score-number">0</span> صحيح من أصل <span id="answered-score">0</span> إجابة
+            </div>
+
+            <div id="questions-container"></div>
+        </div>
+    </div>
+
+    <div id="explain-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">💡 شرح السؤال</div>
+            <div id="modal-text" class="modal-body"></div>
+            <button class="modal-close-btn" onclick="closeModal()">إغلاق الشرح</button>
+        </div>
+    </div>
+
+    <script>
+        
+        // داتا الأسئلة 
+        const questionsData = [
+            // --- الدفعة الأولى (من 1 إلى 15) ---
+            {
+                id: 1,
+                text: "The cost that varies directly with the level of output or production called:",
+                textAr: "التكلفة التي تتغير بشكل مباشر مع مستوى المخرجات أو الإنتاج تسمى:",
+                options: ["A- Fixed costs", "B- Variable costs", "C- Mixed costs", "D- All above"],
+                optionsAr: ["أ- التكاليف الثابتة", "ب- التكاليف المتغيرة", "ج- التكاليف المختلطة", "د- جميع ما سبق"],
+                correctIndex: 1, type: "theory", category: "Theory",
+                explanation: "التكاليف التي تزيد وتنقص بناءً على كمية الإنتاج هي (التكاليف المتغيرة - Variable costs). أما التكاليف الثابتة فلا تتأثر بحجم الإنتاج."
+            },
+            {
+                id: 2,
+                text: "The maintenance that takes place periodically is:",
+                textAr: "الصيانة التي يتم إجراؤها بشكل دوري (منتظم) تسمى:",
+                options: ["A- Predictive maintenance", "B- Preventive maintenance", "C- Break down maintenance", "D- None of above"],
+                optionsAr: ["أ- الصيانة التنبؤية", "ب- الصيانة الوقائية", "ج- صيانة الأعطال", "د- لا شيء مما سبق"],
+                correctIndex: 1, type: "theory", category: "Theory",
+                explanation: "الصيانة التي تتم في مواعيد مجدولة مسبقاً لمنع حدوث العطل هي (الصيانة الوقائية - Preventive maintenance)."
+            },
+            {
+                id: 3,
+                text: "The major objective in controlling inventory is to:",
+                textAr: "الهدف الرئيسي من السيطرة على المخزون هو:",
+                options: ["A- Maximize total inventory costs", "B- Neutralize total inventory cost", "C- Minimize total inventory cost", "D- All of the above"],
+                optionsAr: ["أ- تعظيم التكاليف الكلية للمخزون", "ب- تحييد التكلفة الكلية للمخزون", "ج- تقليل التكلفة الكلية للمخزون إلى أدنى حد", "د- جميع ما سبق"],
+                correctIndex: 2, type: "theory", category: "Theory",
+                explanation: "الهدف من أي نظام لإدارة المخزون هو الوصول بالتكلفة الإجمالية إلى أقل مستوى ممكن (Minimize)."
+            },
+            {
+                id: 4,
+                text: "The selling price per unit of a product = 1000$, Fixed cost = 200,000$ and variable cost per unit = 600$ what is the number of unit to verify BEP?",
+                textAr: "سعر بيع الوحدة لمنتج = 1000$، التكلفة الثابتة = 200,000$ والتكلفة المتغيرة للوحدة = 600$. ما هو عدد الوحدات لتحقيق نقطة التعادل؟",
+                options: ["A- 50", "B- 500", "C- 5", "D- 5000"],
+                optionsAr: ["أ- 50", "ب- 500", "ج- 5", "د- 5000"],
+                correctIndex: 1, type: "math", category: "BEP",
+                explanation: "لإيجاد عدد الوحدات لنقطة التعادل، نقسم التكلفة الثابتة على (سعر البيع ناقص التكلفة المتغيرة).",
+                givens: "S = 1000\\$ , FC = 200,000\\$ , V = 600\\$",
+                required: "نقطة التعادل بالوحدات (BEP Units)",
+                steps: "تطبيق قانون الوحدات:<br>\\[ BEP = \\frac{FC}{S - V} \\]\n\\[ BEP = \\frac{200,000}{1000 - 600} \\]\n\\[ BEP = \\frac{200,000}{400} = 500 \\]"
+            },
+            {
+                id: 5,
+                text: "For a produce the fixed cost = 300$, variable cost = 40$ and sale cost = 160$, then the BEP is:",
+                textAr: "لمنتج ما، التكلفة الثابتة = 300$، التكلفة المتغيرة = 40$ وسعر البيع = 160$، إذن نقطة التعادل BEP هي:",
+                options: ["A- 200", "B- 600", "C- 1200", "D- 400"],
+                optionsAr: ["أ- 200", "ب- 600 (خاطئ بالملزمة)", "ج- 1200", "د- 400 (الحل الصحيح)"],
+                correctIndex: 3, type: "math", category: "BEP",
+                explanation: "بما أن ناتج الوحدات يحتوي على كسر والخيارات أرقام صحيحة، فالمطلوب هو (قيمة المبيعات). تنبيه: الإجابة بالملزمة (600) خاطئة رياضياً، الحل الأكاديمي الصحيح هو (400).",
+                givens: "FC = 300\\$ , V = 40\\$ , S = 160\\$",
+                required: "قيمة المبيعات عند نقطة التعادل (BEP Sales)",
+                steps: "الخطوة الأولى: إيجاد عدد الوحدات:<br>\\[ BEP_{units} = \\frac{FC}{S - V} = \\frac{300}{160 - 40} \\]\n\\[ BEP_{units} = \\frac{300}{120} = 2.5 \\text{ units} \\]<br>الخطوة الثانية: إيجاد قيمة المبيعات (نضرب في سعر البيع):<br>\\[ BEP_{sales} = 2.5 \\times 160 = 400 \\$ \\]"
+            },
+            {
+                id: 6,
+                text: "A company sells (8000) shirts in a year at a constant rate, the holding order cost per shirt per year is (12$) and the ordering cost per order is (500$). What is the economic order quantity (EOQ).",
+                textAr: "تبيع شركة (8000) قميص في السنة بمعدل ثابت، تكلفة الاحتفاظ للقميص في السنة هي (12$) وتكلفة الطلبية هي (500$). ما هي كمية الطلب الاقتصادية (EOQ).",
+                options: ["A- 577", "B- 816", "C- 755", "D- 618"],
+                optionsAr: ["أ- 577", "ب- 816", "ج- 755", "د- 618"],
+                correctIndex: 1, type: "math", category: "EOQ",
+                explanation: "تطبيق مباشر لقانون الكمية الاقتصادية (EOQ) الأساسي لعدم وجود عجز في السؤال.",
+                givens: "D = 8000 , C_h = 12\\$ , C_o = 500\\$", 
+                required: "الكمية الاقتصادية (EOQ)",
+                steps: "القانون الأساسي:<br>\\[ EOQ = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\]\n\\[ EOQ = \\sqrt{\\frac{2 \\cdot 8000 \\cdot 500}{12}} \\]\n\\[ EOQ = \\sqrt{\\frac{8,000,000}{12}} \\]\n\\[ EOQ = \\sqrt{666666.67} \\approx 816.49 \\]"
+            },
+            {
+                id: 7,
+                text: "The relationship between a variable cost, Fixed cost and sales is called:",
+                textAr: "العلاقة التي تربط بين التكلفة المتغيرة، والتكلفة الثابتة، والمبيعات تسمى:",
+                options: ["A- Break down point", "B- Break-even point", "C- Break over point", "D- Profit and loss point"],
+                optionsAr: ["أ- نقطة التعطل", "ب- نقطة التعادل", "ج- نقطة التجاوز", "د- نقطة الربح والخسارة"],
+                correctIndex: 1, type: "theory", category: "Theory",
+                explanation: "المصطلح الذي يجمع بين التكاليف الثابتة والمتغيرة لتحديد متى تتساوى التكاليف مع المبيعات هو (نقطة التعادل - Break-even point)."
+            },
+            {
+                id: 8,
+                text: "To reduce the incidence of break downs or failures in plants or equipment to a void the associated costs is called:",
+                textAr: "تقليل معدل حدوث الأعطال أو الفشل في المصانع أو المعدات لتجنب التكاليف المرتبطة بها يسمى:",
+                options: ["A- Maintenance recovery", "B- Preventive Maintenance", "C- Break down Maintenance", "D- Predictive Maintenance"],
+                optionsAr: ["أ- استرداد الصيانة", "ب- الصيانة الوقائية", "ج- صيانة الأعطال", "د- الصيانة التنبؤية"],
+                correctIndex: 1, type: "theory", category: "Theory",
+                explanation: "القيام بإجراءات استباقية لمنع العطل قبل حدوثه هو تعريف صريح لـ (الصيانة الوقائية - Preventive Maintenance)."
+            },
+            {
+                id: 9,
+                text: "An important issue in preventive Maintenance is the:",
+                textAr: "من المسائل المهمة جداً في الصيانة الوقائية هو معرفة:",
+                options: ["A- Randomly occurrence", "B- Co-occurrence", "C- Compulsory occurrence", "D- Frequency occurrence"],
+                optionsAr: ["أ- الحدوث العشوائي", "ب- الحدوث المشترك", "ج- الحدوث الإجباري", "د- تكرار الحدوث"],
+                correctIndex: 3, type: "theory", category: "Theory",
+                explanation: "لكي نحدد موعد الصيانة الوقائية بشكل صحيح وفعال، يجب أن ندرس ونتوقع (تكرار حدوث - Frequency) الأعطال للآلة."
+            },
+            {
+                id: 10,
+                text: "When the annual ordering cost equal to annual holding cost, the total inventory cost will be:",
+                textAr: "عندما تتساوى تكلفة الطلب السنوية مع تكلفة الاحتفاظ السنوية، فإن إجمالي تكلفة المخزون سيكون:",
+                options: ["A- Maximized", "B- Neutralized", "C- Minimized", "D- Semi-controlled"],
+                optionsAr: ["أ- في حده الأقصى", "ب- محايداً", "ج- في حده الأدنى", "د- شبه مسيطر عليه"],
+                correctIndex: 2, type: "theory", category: "Theory",
+                explanation: "في نظرية إدارة المخزون، نصل إلى أفضل وأقل تكلفة إجمالية (Minimized) بالضبط في النقطة التي تتقاطع وتتساوى فيها تكلفة الطلب مع تكلفة الاحتفاظ."
+            },
+            {
+                id: 11,
+                text: "The major factor a company must make to a achieve balance between low and high inventory level is:",
+                textAr: "العامل الرئيسي الذي يجب على الشركة القيام به لتحقيق التوازن بين مستوى المخزون المنخفض والعالي هو:",
+                options: ["A- Cost minimization", "B- Cost maximization", "C- Cost neutralization", "D- All mentioned above"],
+                optionsAr: ["أ- تقليل التكلفة", "ب- تعظيم التكلفة", "ج- تحييد التكلفة", "د- جميع ما ذكر أعلاه"],
+                correctIndex: 0, type: "theory", category: "Theory",
+                explanation: "الهدف الأساسي من محاولة إيجاد التوازن في كميات المخزون هو الوصول إلى أقل مصاريف ممكنة للشركة، أي (تقليل التكلفة - Cost minimization)."
+            },
+            {
+                id: 12,
+                text: "The basic model in achieving an optimal ordering quantity which minimizes the total inventory costs is:",
+                textAr: "النموذج الأساسي في تحقيق كمية الطلب المثلى التي تقلل إجمالي تكاليف المخزون هو:",
+                options: ["A- High order quantity", "B- Law order quantity", "C- Economic quantity", "D- Non of above"],
+                optionsAr: ["أ- كمية الطلب العالية", "ب- كمية الطلب المنخفضة", "ج- الكمية الاقتصادية", "د- لا شيء مما سبق"],
+                correctIndex: 2, type: "theory", category: "Theory",
+                explanation: "النموذج الرياضي الأساسي المستخدم لحساب أفضل كمية للطلب بأقل تكلفة يُسمى نموذج (الكمية الاقتصادية - Economic Order Quantity)."
+            },
+            {
+                id: 13,
+                text: "The demand for items is 200 items per year. The order cost is 10$ and inventory holding cost is 2.5$ per item per year. If the shortage cost is 4$ per item per year. what will be the EOQ.",
+                textAr: "الطلب على العناصر هو 200 في السنة. تكلفة الطلب 10$ وتكلفة الاحتفاظ 2.5$. إذا كانت تكلفة العجز 4$. ما هي كمية الطلب الاقتصادية (EOQ)؟",
+                options: ["A- 50.99", "B- 5.99", "C- 75.99", "D- 64.46"],
+                optionsAr: ["أ- 50.99", "ب- 5.99", "ج- 75.99", "د- 64.46"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "بما أنه يوجد سماح بـ (العجز - Shortage)، نستخدم القانون المطول للـ EOQ والذي يحتوي على جزء خاص بتكلفة العجز.",
+                givens: "D = 200 , C_o = 10 , C_h = 2.5 , C_s = 4",
+                required: "الكمية الاقتصادية مع العجز (EOQ)",
+                steps: "قانون العجز:<br>\\[ Q = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\cdot \\sqrt{\\frac{C_h + C_s}{C_s}} \\]\n\\[ Q = \\sqrt{\\frac{2 \\cdot 200 \\cdot 10}{2.5}} \\cdot \\sqrt{\\frac{2.5 + 4}{4}} \\]\n\\[ Q = \\sqrt{1600} \\cdot \\sqrt{1.625} \\]\n\\[ Q = 40 \\cdot 1.27475 = 50.99 \\]"
+            },
+            {
+                id: 14,
+                text: "The machine cost of the break down is (1350$) and the cost of preventive maintenance is (1500$ per month) .If preventive maintenance is performed, the probability of a machine break down is negligible. Table below show break down of machine per month. What is the cost difference to make the manger choose the preventive maintenance instead of repair when break down occurs?\nTable: (0:0.25, 1:0.3, 2:0.4, 3:0.12)",
+                textAr: "تكلفة العطل (1350$) والصيانة الوقائية (1500$). يوضح الجدول احتمالات الأعطال (0:0.25, 1:0.3, 2:0.4, 3:0.12). ما هو فرق التكلفة لاختيار الصيانة الوقائية بدلاً من الإصلاح؟",
+                options: ["A- 571", "B- 361", "C- 471", "D- 621"],
+                optionsAr: ["أ- 571", "ب- 361", "ج- 471", "د- 621"],
+                correctIndex: 2, type: "math", category: "Maintenance",
+                explanation: "نحسب العدد المتوقع للأعطال بضرب العطل في احتماليته، ثم نضربه في تكلفة العطل، ونطرح منه تكلفة الصيانة الوقائية لمعرفة الفرق.",
+                givens: "Breakdown = 1350\\$ , PM = 1500\\$",
+                required: "الفرق في التكلفة (Difference)",
+                steps: "العدد المتوقع للأعطال:<br>\\[ E = (0 \\times 0.25) + (1 \\times 0.3) + (2 \\times 0.4) + (3 \\times 0.12) \\]\n\\[ E = 0 + 0.3 + 0.8 + 0.36 = 1.46 \\]<br>التكلفة المتوقعة للإصلاح:<br>\\[ Repair = 1.46 \\times 1350 = 1971 \\$ \\]<br>إيجاد الفرق:<br>\\[ Diff = 1971 - 1500 = 471 \\$ \\]"
+            },
+            {
+                id: 15,
+                text: "For the following data, fixed cost=100,000$, variable cost per unit =300$, selling price per unit =500$ .what is the units of production to verify BEP:",
+                textAr: "التكلفة الثابتة = 100,000$، التكلفة المتغيرة = 300$، سعر البيع = 500$. ما هي وحدات الإنتاج لتحقيق نقطة التعادل BEP:",
+                options: ["A- 350", "B- 500", "C- 400", "D- 420"],
+                optionsAr: ["أ- 350", "ب- 500", "ج- 400", "د- 420"],
+                correctIndex: 1, type: "math", category: "BEP",
+                explanation: "تطبيق مباشر لقانون نقطة التعادل (التكلفة الثابتة تقسيم هامش الربح للوحدة).",
+                givens: "FC = 100,000 , V = 300 , S = 500",
+                required: "وحدات الإنتاج (Units of Production)",
+                steps: "التطبيق المباشر:<br>\\[ BEP = \\frac{FC}{S - V} \\]\n\\[ BEP = \\frac{100,000}{500 - 300} \\]\n\\[ BEP = \\frac{100,000}{200} = 500 \\text{ units} \\]"
+            },
+            {
+                id: 16,
+                text: "For max Z=3X1+5X2. And the point of feasible region bounded by the following point: A(0,6), B(2,6), C(4,3), D(4,0). Then the maximum value of (Z) is at point:",
+                textAr: "لإيجاد القيمة العظمى للمعادلة Z=3X1+5X2، ونقاط منطقة الحل الممكنة هي: A(0,6), B(2,6), C(4,3), D(4,0). القيمة العظمى تقع عند النقطة:",
+                options: ["A- A", "B- B", "C- C", "D- D"],
+                optionsAr: ["أ- A", "ب- B", "ج- C", "د- D"],
+                correctIndex: 1, type: "math", category: "LP",
+                explanation: "في البرمجة الخطية، نعوض كل نقطة معطاة في معادلة الهدف (الرقم الأول بدل X1 والثاني بدل X2). وبما أن المطلوب هو تعظيم (Max)، نختار النقطة التي تعطينا أكبر ناتج.",
+                givens: "Z = 3X_1 + 5X_2",
+                required: "أكبر قيمة (Maximum value of Z)",
+                steps: "نعوض النقاط في المعادلة:<br>\\[ A(0,6): Z = 3(0) + 5(6) = 30 \\]\n\\[ B(2,6): Z = 3(2) + 5(6) = 6 + 30 = 36 \\leftarrow \\text{Max} \\]\n\\[ C(4,3): Z = 3(4) + 5(3) = 12 + 15 = 27 \\]\n\\[ D(4,0): Z = 3(4) + 5(0) = 12 \\]"
+            },
+            {
+                id: 17,
+                text: "For Min. Z=4X1+6X2 and the point of feasible region bounded by the following point: A(0,12), B(0.8,7.2), C(8,0), D(0,8). Then the minimum value of (Z) is at point:",
+                textAr: "لإيجاد القيمة الصغرى للمعادلة Z=4X1+6X2، ونقاط منطقة الحل هي: A(0,12), B(0.8,7.2), C(8,0), D(0,8). إذن، القيمة الصغرى تقع عند النقطة:",
+                options: ["A- A", "B- B", "C- C", "D- D"],
+                optionsAr: ["أ- A", "ب- B", "ج- C", "د- D"],
+                correctIndex: 2, type: "math", category: "LP",
+                explanation: "نعوض كل نقطة في المعادلة، وبما أن المطلوب هنا هو (Min) أي تقليل التكلفة أو القيمة الصغرى، فنختار النقطة التي تنتج أصغر رقم.",
+                givens: "Z = 4X_1 + 6X_2",
+                required: "أصغر قيمة (Minimum value of Z)",
+                steps: "نعوض النقاط:<br>\\[ A(0,12): Z = 4(0) + 6(12) = 72 \\]\n\\[ B(0.8, 7.2): Z = 4(0.8) + 6(7.2) = 3.2 + 43.2 = 46.4 \\]\n\\[ C(8,0): Z = 4(8) + 6(0) = 32 \\leftarrow \\text{Min} \\]\n\\[ D(0,8): Z = 4(0) + 6(8) = 48 \\]"
+            },
+            {
+                id: 18,
+                text: "For max. Z=2X1+5X2 and the points of feasible region bounded by the following point: A(0,0), B(0,8), C(6,5), D(9,0). Then the maximum value of (Z) is at point:",
+                textAr: "لإيجاد القيمة العظمى للمعادلة Z=2X1+5X2 ونقاط منطقة الحل هي: A(0,0), B(0,8), C(6,5), D(9,0). القيمة العظمى تقع عند النقطة:",
+                options: ["A- A", "B- B", "C- C", "D- D"],
+                optionsAr: ["أ- A", "ب- B", "ج- C", "د- D"],
+                correctIndex: 1, type: "math", category: "LP",
+                explanation: "مسألة تعويض بسيطة. نعوض الأرقام في معادلة (الربح Z) ونختار أكبر ناتج لأن المطلوب هو (Max).",
+                givens: "Z = 2X_1 + 5X_2",
+                required: "أكبر قيمة (Maximum value of Z)",
+                steps: "نعوض النقاط:<br>\\[ A(0,0): Z = 2(0) + 5(0) = 0 \\]\n\\[ B(0,8): Z = 2(0) + 5(8) = 40 \\leftarrow \\text{Max} \\]\n\\[ C(6,5): Z = 2(6) + 5(5) = 12 + 25 = 37 \\]\n\\[ D(9,0): Z = 2(9) + 5(0) = 18 \\]"
+            },
+            {
+                id: 19,
+                text: "The demand for an item is 200 item per year, the order cost is 10$ and inventory holding cost is 2.5$ per items per year. If the shortage cost is 4$ item per year. What is the maximum inventory (Imax).",
+                textAr: "الطلب هو 200 عنصر في السنة، تكلفة الطلب 10$، وتكلفة الاحتفاظ 2.5$ للعنصر في السنة. وتكلفة العجز 4$ للعنصر. ما هو الحد الأقصى للمخزون (Imax)؟",
+                options: ["A- 31.37", "B- 3.37", "C- 63.37", "D- 23.37"],
+                optionsAr: ["أ- 31.37", "ب- 3.37", "ج- 63.37", "د- 23.37"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "في حالة السماح بوجود عجز، لا يدخل كل ما نطلبه للمخزن (لأن جزءاً منه يذهب للزبائن المنتظرين فوراً). الباقي الذي يدخل المخزن يسمى الحد الأقصى للمخزون (Imax). نحسبه بضرب الـ EOQ في نسبة العجز.",
+                givens: "D=200 , C_o=10\\$ , C_h=2.5\\$ , C_s=4\\$",
+                required: "الحد الأقصى للمخزون (Imax)",
+                steps: "الخطوة الأولى: إيجاد EOQ:<br>\\[ EOQ = 50.99 \\text{ (حسبناها في سؤال 13)} \\]<br>الخطوة الثانية: حساب Imax:<br>\\[ I_{max} = EOQ \\times \\left( \\frac{C_s}{C_h + C_s} \\right) \\]\n\\[ I_{max} = 50.99 \\times \\left( \\frac{4}{2.5 + 4} \\right) \\]\n\\[ I_{max} = 50.99 \\times 0.61538 \\approx 31.37 \\]"
+            },
+            {
+                id: 20,
+                text: "The demand for an item is 200 item per year, the order cost is 10$ and inventory holding cost is 2.5$ per items per year. If the shortage cost is 4$ per item per year. What is the annular cost?",
+                textAr: "الطلب هو 200 عنصر، تكلفة الطلب 10$، تكلفة الاحتفاظ 2.5$ وتكلفة العجز 4$. ما هي التكلفة السنوية الكلية؟",
+                options: ["A- 51.28", "B- 5.28", "C- 78.44", "D- 30.28"],
+                optionsAr: ["أ- 51.28 (إجابة الملزمة الخاطئة)", "ب- 5.28", "ج- 78.44 (الحل الأكاديمي الصحيح)", "د- 30.28"],
+                correctIndex: 2, type: "math", category: "EOQ",
+                explanation: "تنبيه: الأستاذ أخطأ في هذا السؤال بالملزمة ووضع (51.28) وهو رقم لا يمت بصلة للقانون الصحيح. الحل العلمي والأكاديمي الصحيح للتكلفة السنوية هو (78.44$). قمنا بوضعه لك في الخيارات.",
+                givens: "D=200 , C_o=10\\$ , C_h=2.5\\$ , C_s=4\\$",
+                required: "التكلفة السنوية الكلية (Total Cost TC)",
+                steps: "تطبيق قانون التكلفة مع العجز:<br>\\[ TC = \\sqrt{2 \\cdot D \\cdot C_o \\cdot C_h} \\cdot \\sqrt{\\frac{C_s}{C_h + C_s}} \\]\n\\[ TC = \\sqrt{2 \\cdot 200 \\cdot 10 \\cdot 2.5} \\cdot \\sqrt{\\frac{4}{2.5 + 4}} \\]\n\\[ TC = \\sqrt{10000} \\cdot \\sqrt{\\frac{4}{6.5}} \\]\n\\[ TC = 100 \\cdot 0.78446 = 78.44 \\$ \\]"
+            },
+            {
+                id: 21,
+                text: "A company sells product by 10$ per unit, the variable cost is 5$ per unit and total fixed cost is 25,000$, what is the BEP:",
+                textAr: "تبيع شركة منتجاً بـ 10$ للوحدة، التكلفة المتغيرة هي 5$ للوحدة وإجمالي التكلفة الثابتة هو 25,000$، ما هي نقطة التعادل (BEP):",
+                options: ["A- 80,000", "B- 50,000", "C- 40,000", "D- 60,000"],
+                optionsAr: ["أ- 80,000", "ب- 50,000", "ج- 40,000", "د- 60,000"],
+                correctIndex: 1, type: "math", category: "BEP",
+                explanation: "بما أن الخيارات بأرقام كبيرة جداً، فهذا يعني أن المطلوب هو إيجاد نقطة التعادل كـ (قيمة مبيعات بالدولار) وليس كـ (وحدات). نحسب الوحدات أولاً ثم نضربها بسعر البيع.",
+                givens: "S = 10\\$ , V = 5\\$ , FC = 25,000\\$",
+                required: "نقطة التعادل كقيمة مبيعات (BEP in Sales)",
+                steps: "1. إيجاد نقطة التعادل بالوحدات:<br>\\[ BEP_{units} = \\frac{FC}{S - V} = \\frac{25000}{10 - 5} = 5000 \\text{ units} \\]<br>2. تحويلها إلى قيمة مالية:<br>\\[ BEP_{sales} = 5000 \\times 10 = 50,000 \\$ \\]"
+            },
+            {
+                id: 22,
+                text: "Company sells cars for USP=20,000$ per unit. Their fixed cost is F.C= 600,000$. Their variable cost is UVC=5,000 per unit. Then to get profit 30,000$. What is the quantity Q should be produced?",
+                textAr: "شركة تبيع سيارات بسعر 20,000$ للوحدة. تكلفتهم الثابتة 600,000$. وتكلفتهم المتغيرة 5,000$ للوحدة. للحصول على ربح مقداره 30,000$. ما هي الكمية (Q) التي يجب إنتاجها؟",
+                options: ["A- 42 item", "B- 28 item", "C- 20 item", "D- 40 item"],
+                optionsAr: ["أ- 42 وحدة", "ب- 28 وحدة", "ج- 20 وحدة", "د- 40 وحدة"],
+                correctIndex: 0, type: "math", category: "BEP",
+                explanation: "هنا نستخدم قانون نقطة التعادل ولكن مع إضافة (الربح المستهدف - Target Profit) إلى البسط (مع التكلفة الثابتة).",
+                givens: "S = 20,000\\$ , FC = 600,000\\$ , V = 5,000\\$ , Profit = 30,000\\$",
+                required: "الكمية المطلوبة لتحقيق الربح (Quantity Q)",
+                steps: "القانون مع الربح المستهدف:<br>\\[ Q = \\frac{FC + Profit}{S - V} \\]\n\\[ Q = \\frac{600,000 + 30,000}{20,000 - 5,000} \\]\n\\[ Q = \\frac{630,000}{15,000} = 42 \\text{ items} \\]"
+            },
+            {
+                id: 23,
+                text: "Company sells books for USP=50$ per unit. Their fixed cost=6,000$. Their variable cost is UVC=20$ per unit. If the company produce quantity Q(units)=300, then the profit is:",
+                textAr: "شركة تبيع كتباً بسعر 50$ للوحدة. تكلفتها الثابتة = 6,000$. التكلفة المتغيرة 20$ للوحدة. إذا أنتجت الشركة كمية 300 وحدة، فإن الربح هو:",
+                options: ["A- 3500$", "B- 3000$", "C- 4500$", "D- 2500$"],
+                optionsAr: ["أ- 3500$", "ب- 3000$", "ج- 4500$", "د- 2500$"],
+                correctIndex: 1, type: "math", category: "BEP",
+                explanation: "لحساب الربح أو الخسارة (Operating Income)، نضرب الكمية المباعة في (سعر البيع - التكلفة المتغيرة)، ثم نطرح منها المصاريف الثابتة الكلية.",
+                givens: "S = 50\\$ , FC = 6,000\\$ , V = 20\\$ , Q = 300",
+                required: "الربح (Profit)",
+                steps: "قانون الدخل التشغيلي:<br>\\[ Profit = Q(S - V) - FC \\]\n\\[ Profit = 300(50 - 20) - 6000 \\]\n\\[ Profit = 300(30) - 6000 \\]\n\\[ Profit = 9000 - 6000 = 3000 \\$ \\]"
+            },
+            {
+                id: 24,
+                text: "Suppose that the demand for a product is D=300 unit per month and the items are withdrawn at a constant rate. The setup cost is Co=15$. The inventory holding cost is Ch=3$ per item per month. If shortages are allowed cost is Cs=5$ per item per month, then the EOQ size is:",
+                textAr: "الطلب على منتج هو 300 وحدة شهرياً. تكلفة الطلب 15$. تكلفة الاحتفاظ 3$ للوحدة شهرياً. إذا كان يُسمح بالعجز وتكلفته 5$ للوحدة شهرياً، فإن حجم الكمية الاقتصادية (EOQ) هو:",
+                options: ["A- 99 item", "B- 96 item", "C- 66 item", "D- 69 item"],
+                optionsAr: ["أ- 99 وحدة", "ب- 96 وحدة", "ج- 66 وحدة", "د- 69 وحدة"],
+                correctIndex: 3, type: "math", category: "EOQ",
+                explanation: "بما أن جميع المعطيات الزمنية متطابقة (كلها بـ الشهر)، فلا نحتاج لتحويل أي شيء. نطبق قانون الكمية الاقتصادية مع وجود عجز مباشرة.",
+                givens: "D = 300 , C_o = 15\\$ , C_h = 3\\$ , C_s = 5\\$",
+                required: "الكمية الاقتصادية مع العجز (EOQ)",
+                steps: "تطبيق مباشر للقانون:<br>\\[ Q = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\cdot \\sqrt{\\frac{C_h + C_s}{C_s}} \\]\n\\[ Q = \\sqrt{\\frac{2 \\cdot 300 \\cdot 15}{3}} \\cdot \\sqrt{\\frac{3 + 5}{5}} \\]\n\\[ Q = \\sqrt{3000} \\cdot \\sqrt{\\frac{8}{5}} \\]\n\\[ Q = 54.77 \\cdot 1.2649 \\approx 69.28 \\approx 69 \\]"
+            },
+            {
+                id: 25,
+                text: "Company sells Cars for USP=200$/unit. Their fixed cost is =60,000$. Their variable cost is =50$/unit. Then for Q=300 unit, the output is?",
+                textAr: "شركة تبيع سيارات بسعر 200$ للوحدة. التكلفة الثابتة = 60,000$. التكلفة المتغيرة = 50$ للوحدة. عند إنتاج كمية مقدارها 300 وحدة، فإن الناتج التشغيلي يكون؟",
+                options: ["A- OI=15,000$ (PROFIT)", "B- OI=-15,000$ (LOSS)", "C- OI=-25,000$ (LOSS)", "D- OI=25,000$ (PROFIT)"],
+                optionsAr: ["أ- 15,000$ (ربح)", "ب- 15,000$- (خسارة)", "ج- 25,000$- (خسارة)", "د- 25,000$ (ربح)"],
+                correctIndex: 1, type: "math", category: "BEP",
+                explanation: "نحسب صافي الدخل (OI). إذا كان الناتج رقماً موجباً فهو ربح (Profit)، وإذا كان بالسالب فهو خسارة (Loss).",
+                givens: "S = 200\\$ , FC = 60,000\\$ , V = 50\\$ , Q = 300",
+                required: "صافي الدخل التشغيلي (Operating Income OI)",
+                steps: "حساب الربح/الخسارة:<br>\\[ OI = Q(S - V) - FC \\]\n\\[ OI = 300(200 - 50) - 60000 \\]\n\\[ OI = 300(150) - 60000 \\]\n\\[ OI = 45000 - 60000 = -15,000 \\$ \\text{ (Loss / خسارة)} \\]"
+            },
+            {
+                id: 26,
+                text: "If Max Z=5x1+7x2 S.t 2x1+3x2<=30, x1+x2<=12 and x1, x2>=0. Then the optimum solution of Z at (6,6) is:",
+                textAr: "إذا كان المطلوب تعظيم Z=5x1+7x2، ضمن قيود محددة. فإن الحل الأمثل لـ Z عند النقطة المعطاة (6,6) هو:",
+                options: ["A- 72", "B- 84", "C- 76", "D- None of the above"],
+                optionsAr: ["أ- 72", "ب- 84", "ج- 76", "د- لا شيء مما سبق"],
+                correctIndex: 0, type: "math", category: "LP",
+                explanation: "هذا السؤال هدية! في مسائل البرمجة الخطية عندما يعطيك النقطة جاهزة (x1=6 و x2=6)، كل ما عليك فعله هو تعويض هذه الأرقام في معادلة الهدف Z دون الحاجة للرسم أو حل القيود.",
+                givens: "Z = 5x_1 + 7x_2 \\text{ , Point } (6,6)",
+                required: "قيمة Z عند النقطة",
+                steps: "التعويض المباشر:<br>\\[ Z = 5(x_1) + 7(x_2) \\]\n\\[ Z = 5(6) + 7(6) \\]\n\\[ Z = 30 + 42 = 72 \\]"
+            },
+            {
+                id: 27,
+                text: "If Min Z=6x1+5x2 S.t 2x1+3x2<=12, 2x1+x2<=6, x1, x2>=0. Then the optimum solution of Z at (1.5, 3) is:",
+                textAr: "إذا كان المطلوب تقليل Z=6x1+5x2 ضمن قيود محددة. فإن الحل الأمثل لـ Z عند النقطة (1.5, 3) هو:",
+                options: ["A- 15", "B- 20", "C- 24", "D- 18"],
+                optionsAr: ["أ- 15", "ب- 20", "ج- 24", "د- 18"],
+                correctIndex: 2, type: "math", category: "LP",
+                explanation: "مسألة تعويض مباشر أخرى. الرقم الأول (1.5) يمثل x1 والثاني (3) يمثل x2. نضرب ونجمع حسب معادلة الهدف Z المعطاة.",
+                givens: "Z = 6x_1 + 5x_2 \\text{ , Point } (1.5 , 3)",
+                required: "قيمة Z",
+                steps: "التعويض:<br>\\[ Z = 6(x_1) + 5(x_2) \\]\n\\[ Z = 6(1.5) + 5(3) \\]\n\\[ Z = 9 + 15 = 24 \\]"
+            },
+            {
+                id: 28,
+                text: "Max Z=5x1+8x2, S.t 3x1+2x2<=24, x1+3x2<=12, x1, x2>=0. Then the optimum solution of Z=40 at:",
+                textAr: "لتعظيم Z=5x1+8x2. الحل الأمثل الذي يعطي الناتج (Z=40) يكون عند النقطة:",
+                options: ["A- (8,0)", "B- (0, 12)", "C- (0,4)", "D- (6, 3)"],
+                optionsAr: ["أ- (8,0)", "ب- (0, 12)", "ج- (0,4)", "د- (6, 3)"],
+                correctIndex: 0, type: "math", category: "LP",
+                explanation: "هنا عكس الفكرة؛ أعطاك الناتج النهائي لـ Z وهو (40)، ويطلب منك تجربة النقاط في الخيارات لترى أي نقطة منها ستعطيك الرقم 40 عند التعويض في المعادلة.",
+                givens: "Z = 5x_1 + 8x_2 \\text{ , Target Z } = 40",
+                required: "إيجاد النقطة الصحيحة (The Correct Point)",
+                steps: "تجربة الخيارات:<br>\\[ \\text{A (8,0): } Z = 5(8) + 8(0) = 40 \\text{ (وهو المطلوب)} \\]\n\\[ \\text{B (0,12): } Z = 5(0) + 8(12) = 96 \\]\n\\[ \\text{C (0,4): } Z = 5(0) + 8(4) = 32 \\]\n\\[ \\text{D (6,3): } Z = 5(6) + 8(3) = 54 \\]"
+            },
+            {
+                id: 29,
+                text: "Min Z=4x1+x2, S.t 2x1+3x2<=120, 2x1+x2<=60, x1, x2>=0. Then the optimum solution of Z=40 at:",
+                textAr: "لتقليل التكلفة Z=4x1+x2. الحل الأمثل الذي يعطي الناتج (Z=40) يكون عند النقطة:",
+                options: ["A- (30,0)", "B- (0, 40)", "C- (15, 30)", "D- (12, 9)"],
+                optionsAr: ["أ- (30,0)", "ب- (0, 40)", "ج- (15, 30)", "د- (12, 9)"],
+                correctIndex: 1, type: "math", category: "LP",
+                explanation: "نفس طريقة السؤال السابق، نجرب تعويض كل نقطة من الخيارات داخل معادلة الهدف (Z=4x1+x2) لنكتشف أي منها تنتج الرقم 40.",
+                givens: "Z = 4x_1 + x_2 \\text{ , Target Z } = 40",
+                required: "إيجاد النقطة الصحيحة",
+                steps: "تجربة الخيارات:<br>\\[ \\text{A (30,0): } Z = 4(30) + 0 = 120 \\]\n\\[ \\text{B (0,40): } Z = 4(0) + 40 = 40 \\text{ (وهو المطلوب)} \\]\n\\[ \\text{C (15,30): } Z = 4(15) + 30 = 90 \\]\n\\[ \\text{D (12,9): } Z = 4(12) + 9 = 57 \\]"
+            },
+            {
+                id: 30,
+                text: "For the LP problem Minimize z=2x+3y the coordinates of the corner points of the bounded feasible region are A(3,3), B(20,3), C(20,10) and D(18,12). The minimum value of z is:",
+                textAr: "لمسألة البرمجة الخطية (تقليل Z=2x+3y)، إحداثيات النقاط الركنية هي: A(3,3), B(20,3), C(20,10), D(18,12). فإن القيمة الصغرى (Minimum) لـ Z هي:",
+                options: ["A- 49", "B- 15", "C- 10", "D- 05"],
+                optionsAr: ["أ- 49", "ب- 15", "ج- 10", "د- 05"],
+                correctIndex: 1, type: "math", category: "LP",
+                explanation: "بما أن المطلوب هو القيمة الصغرى (Minimize)، سنقوم بتعويض جميع النقاط الأربعة في المعادلة، ومن ثم نختار أصغر ناتج يظهر لنا.",
+                givens: "Z = 2x + 3y \\text{ , Minimize}",
+                required: "أصغر قيمة لـ Z",
+                steps: "التعويض والمقارنة:<br>\\[ A(3,3): Z = 2(3) + 3(3) = 6 + 9 = 15 \\leftarrow \\text{Min} \\]\n\\[ B(20,3): Z = 2(20) + 3(3) = 40 + 9 = 49 \\]\n\\[ C(20,10): Z = 2(20) + 3(10) = 40 + 30 = 70 \\]\n\\[ D(18,12): Z = 2(18) + 3(12) = 36 + 36 = 72 \\]"
+            },
+              // --- الدفعة الثالثة (من 31 إلى 45) ---
+            {
+                id: 31,
+                text: "For the following data: Fixed cost (F)= 100,000 ID, Variable cost per unit (V)= 300 ID, Selling price per unit (S)= 500 ID. Then the number of unit (Units of Production) to verify BEP is:",
+                textAr: "لدينا البيانات التالية: التكلفة الثابتة = 100,000، التكلفة المتغيرة للوحدة = 300، سعر البيع للوحدة = 500. عدد الوحدات المنتجة لتحقيق نقطة التعادل (BEP) هو:",
+                options: ["A- 500 units", "B- 1,000 units", "C- 1,250 units", "D- None of the above"],
+                optionsAr: ["أ- 500 وحدة", "ب- 1,000 وحدة", "ج- 1,250 وحدة", "د- لا شيء مما سبق"],
+                correctIndex: 0, type: "math", category: "BEP",
+                explanation: "تطبيق مباشر لقانون نقطة التعادل بالوحدات. نقسم التكلفة الثابتة على هامش الربح للوحدة (سعر البيع ناقص التكلفة المتغيرة).",
+                givens: "FC = 100,000 , V = 300 , S = 500",
+                required: "نقطة التعادل بالوحدات (BEP Units)",
+                steps: "تطبيق قانون الوحدات:<br>\\[ BEP = \\frac{FC}{S - V} \\]\n\\[ BEP = \\frac{100,000}{500 - 300} \\]\n\\[ BEP = \\frac{100,000}{200} = 500 \\text{ units} \\]"
+            },
+            {
+                id: 32,
+                text: "Break-even point (BEP) when Fixed cost (F)= 300 ID, Selling price per unit (S) = 40 ID, Variable cost per unit (V)= 20 ID is:",
+                textAr: "نقطة التعادل (BEP) عندما التكلفة الثابتة = 300، سعر البيع للوحدة = 40، التكلفة المتغيرة للوحدة = 20 هي:",
+                options: ["A- 800 ID", "B- 200 ID", "C- 600 ID", "D- 100 ID"],
+                optionsAr: ["أ- 800 دينار", "ب- 200 دينار", "ج- 600 دينار", "د- 100 دينار"],
+                correctIndex: 2, type: "math", category: "BEP",
+                explanation: "بما أن الخيارات معطاة بالمبلغ (ID)، نحسب عدد الوحدات أولاً ثم نضربه في سعر البيع لاستخراج قيمة المبيعات عند التعادل.",
+                givens: "FC = 300 , S = 40 , V = 20",
+                required: "قيمة التعادل (BEP Sales)",
+                steps: "الخطوة الأولى: إيجاد الوحدات<br>\\[ BEP_{units} = \\frac{300}{40 - 20} = \\frac{300}{20} = 15 \\text{ units} \\]<br>الخطوة الثانية: إيجاد القيمة<br>\\[ BEP_{sales} = 15 \\times 40 = 600 \\text{ ID} \\]"
+            },
+            {
+                id: 33,
+                text: "If the following data: Fixed cost (F)= 120,000 ID, Variable cost per unit (V)= 100,000 ID, Selling price per unit (S)= 300,000 ID. Then the number of unit to obtain on operating profit of 80,000 ID is:",
+                textAr: "إذا توفرت البيانات: التكلفة الثابتة = 120,000، التكلفة المتغيرة للوحدة = 100,000، سعر بيع الوحدة = 300,000. فإن عدد الوحدات اللازمة لتحقيق ربح تشغيلي قدره 80,000 هو:",
+                options: ["A- 5 units", "B- 1 units", "C- 12 units", "D- 4 units"],
+                optionsAr: ["أ- 5 وحدات", "ب- 1 وحدة", "ج- 12 وحدة", "د- 4 وحدات"],
+                correctIndex: 1, type: "math", category: "BEP",
+                explanation: "في مسائل 'الربح المستهدف'، نقوم بإضافة الربح المطلوب إلى التكاليف الثابتة في البسط، ثم نقسم كالمعتاد.",
+                givens: "FC = 120,000 , V = 100,000 , S = 300,000 , Profit = 80,000",
+                required: "الكمية المطلوبة لتحقيق الربح (Target Quantity)",
+                steps: "تطبيق قانون الربح المستهدف:<br>\\[ Q = \\frac{FC + Profit}{S - V} \\]\n\\[ Q = \\frac{120,000 + 80,000}{300,000 - 100,000} \\]\n\\[ Q = \\frac{200,000}{200,000} = 1 \\text{ unit} \\]"
+            },
+            {
+                id: 34,
+                text: "The operating profit at production and selling 4,000 units, when Fixed cost= 10,000 ID, Variable cost per unit= 10 ID, Selling price per unit= 25 ID is:",
+                textAr: "الربح التشغيلي عند إنتاج وبيع 4,000 وحدة، التكلفة الثابتة = 10,000، التكلفة المتغيرة = 10، وسعر البيع = 25 هو:",
+                options: ["A- 50,000 ID", "B- 20,000 ID", "C- 70,000 ID", "D- 90,000 ID"],
+                optionsAr: ["أ- 50,000", "ب- 20,000", "ج- 70,000", "د- 90,000"],
+                correctIndex: 0, type: "math", category: "BEP",
+                explanation: "الربح يساوي (الكمية المباعة مضروبة في هامش ربح الوحدة) مطروحاً منه التكلفة الثابتة.",
+                givens: "Q = 4000 , FC = 10,000 , V = 10 , S = 25",
+                required: "الربح (Profit)",
+                steps: "حساب الربح:<br>\\[ Profit = Q(S - V) - FC \\]\n\\[ Profit = 4000(25 - 10) - 10000 \\]\n\\[ Profit = 4000(15) - 10000 \\]\n\\[ Profit = 60000 - 10000 = 50,000 \\text{ ID} \\]"
+            },
+             {
+                id: 35,
+                text: "Company XYZ has to choose between two machines to purchase. The selling price is 14$ per unit. Machine A: annual cost of 4000$ with per unit cost (VC) of 10$. Machine B: annual cost of 9000$ with per unit cost (VC) of 5$. Then:",
+                textAr: "شركة XYZ تقارن بين آلتين. سعر البيع 14$. الآلة A: تكلفة ثابتة 4000$ ومتغيرة 10$. الآلة B: تكلفة ثابتة 9000$ ومتغيرة 5$. إذن:",
+                options: ["A- Machine A produce equal units of Machine B.", "B- Machine A produce low units than Machine B.", "C- Machine B produce low units than Machine A.", "D- None of these above answers."],
+                optionsAr: ["أ- الآلة A تنتج وحدات مساوية للآلة B.", "ب- الآلة A تُستخدم لإنتاج وحدات أقل من الآلة B.", "ج- الآلة B تُستخدم لإنتاج وحدات أقل من الآلة A.", "د- لا شيء مما سبق."],
+                correctIndex: 1, type: "math", category: "Machine",
+                explanation: "الآلة (A) تكلفتها الثابتة منخفضة جداً (4000) مقارنة بـ (B)، لذلك هي الخيار الأفضل والأنسب عندما يكون حجم الإنتاج (الوحدات المنتجة) منخفضاً.",
+                givens: "Machine A (FC=4000$) , Machine B (FC=9000$)",
+                required: "اختيار الآلة الأفضل للإنتاج المنخفض",
+                steps: "القاعدة الاقتصادية لمقارنة المكائن:<br>الآلة ذات <b>التكلفة الثابتة الأقل</b> (وهي الآلة A بتكلفة 4000$) تكون دائماً هي الخيار الأفضل والأوفر عندما يكون حجم الإنتاج منخفضاً (Low units)."
+            },            
+            {
+                id: 36,
+                text: "Suppose that the demand for a product (D) is 6000 per year. The order cost (Co) is 60$ and the inventory holding cost (Ch) is 2$ per item per month. Assuming shortages are not allowed, Then the economic order quantity (EOQ) is:",
+                textAr: "الطلب السنوي 6000. تكلفة الطلب 60$. تكلفة الاحتفاظ 2$ شهرياً. بدون عجز، الكمية الاقتصادية EOQ هي:",
+                options: ["A- 600 units", "B- 400 units", "C- 900 units", "D- 300 units"],
+                optionsAr: ["أ- 600 وحدة", "ب- 400 وحدة", "ج- 900 وحدة", "د- 300 وحدة"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "تنبيه هام جداً: الأستاذ وضع تكلفة الاحتفاظ (Ch) بصيغة 'per month' ولكنه خطأً عوضها مباشرة برقم 2 في القانون دون أن يضربها في 12 لتصبح سنوية. سنحل بناءً على طريقة الأستاذ لاستخراج الخيار المطابق بالملزمة.",
+                givens: "D = 6000 , C_o = 60 , C_h = 2",
+                required: "الكمية الاقتصادية (EOQ)",
+                steps: "التعويض بقانون EOQ (بطريقة الملزمة):<br>\\[ EOQ = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\]\n\\[ EOQ = \\sqrt{\\frac{2 \\cdot 6000 \\cdot 60}{2}} \\]\n\\[ EOQ = \\sqrt{360,000} = 600 \\text{ units} \\]"
+            },
+            {
+                id: 37,
+                text: "For the previous problem (Q36). Then the number of ordering during the year (order frequency) is:",
+                textAr: "لنفس مسألة السؤال السابق (Q36). عدد الطلبيات خلال السنة (تكرار الطلب) هو:",
+                options: ["A- 10 orders", "B- 18 orders", "C- 17 orders", "D- 12 orders"],
+                optionsAr: ["أ- 10 طلبيات", "ب- 18 طلبية", "ج- 17 طلبية", "د- 12 طلبية"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "لمعرفة عدد المرات التي سنطلب فيها (N)، نقسم إجمالي الطلب السنوي (D) على كمية الطلب الواحدة (Q).",
+                givens: "D = 6000 , EOQ (Q) = 600",
+                required: "عدد الطلبيات (N)",
+                steps: "حساب التكرار:<br>\\[ N = \\frac{D}{Q} \\]\n\\[ N = \\frac{6000}{600} = 10 \\text{ orders} \\]"
+            },
+            {
+                id: 38,
+                text: "For the previous problem (Q36). Then the interval between two orders (time between orders) is:",
+                textAr: "لنفس مسألة السؤال السابق (Q36). الوقت الفاصل بين طلبيتين (بالسنوات) هو:",
+                options: ["A- 0.3 year", "B- 0.4 year", "C- 0.1 year", "D- 0.6 year"],
+                optionsAr: ["أ- 0.3 سنة", "ب- 0.4 سنة", "ج- 0.1 سنة", "د- 0.6 سنة"],
+                correctIndex: 2, type: "math", category: "EOQ",
+                explanation: "لحساب الوقت الفاصل بين الطلبيات (T) نقسم كمية الطلب (Q) على إجمالي الطلب (D).",
+                givens: "EOQ (Q) = 600 , D = 6000",
+                required: "الوقت الفاصل (Time between orders T)",
+                steps: "حساب الوقت الفاصل:<br>\\[ T = \\frac{Q}{D} = \\frac{600}{6000} \\]\n\\[ T = 0.1 \\text{ year} \\]"
+            },
+            {
+                id: 39,
+                text: "Suppose that the demand for a product (D) is 600 per year, and the items are withdrawn uniformly. The order cost (Co) is 12$ and the inventory holding cost (Ch) is 0.1$ per item per month. Assuming shortages are not allowed, Then the annual cost is:",
+                textAr: "الطلب 600 سنوياً. تكلفة الطلب 12$. تكلفة الاحتفاظ 0.1$ شهرياً. ما هي التكلفة السنوية الكلية؟",
+                options: ["A- 37.94 $", "B- 58.7 $", "C- 68.3 $", "D- 86.5 $"],
+                optionsAr: ["أ- 37.94 $", "ب- 58.7 $", "ج- 68.3 $", "د- 86.5 $"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "نفس خطأ الأستاذ السابق: لم يحول تكلفة الاحتفاظ (Ch) إلى سنوي، بل عوض الرقم 0.1 مباشرة في قانون التكلفة الإجمالية (TC). نحسبها على طريقته لتطابق الخيارات.",
+                givens: "D = 600 , C_o = 12 , C_h = 0.1",
+                required: "التكلفة السنوية الكلية (Total Cost TC)",
+                steps: "حساب التكلفة הכلية:<br>\\[ TC = \\sqrt{2 \\cdot D \\cdot C_o \\cdot C_h} \\]\n\\[ TC = \\sqrt{2 \\cdot 600 \\cdot 12 \\cdot 0.1} \\]\n\\[ TC = \\sqrt{1440} \\approx 37.947 \\$ \\]"
+            },
+            {
+                id: 40,
+                text: "Suppose that the demand for a product (D) is 100 per year, and the items are withdrawn uniformly. The order cost (Co) is 10$ and the inventory holding cost (Ch) is 4$ per item per month. If shortages cost (Cs) 36$ per item per year, Then the economic order quantity (EOQ) is:",
+                textAr: "الطلب 100 سنوياً. تكلفة الطلب 10$ والاحتفاظ 4$ شهرياً والعجز 36$ سنوياً. ما هي الكمية الاقتصادية (EOQ) بوجود عجز؟",
+                options: ["A- 23.57 units", "B- 24.31 units", "C- 12.62 units", "D- 21.91 units"],
+                optionsAr: ["أ- 23.57 وحدة", "ب- 24.31 وحدة", "ج- 12.62 وحدة", "د- 21.91 وحدة"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "نطبق قانون EOQ الشامل الخاص بالعجز، ونعوض Ch برقم 4 كما فعل الأستاذ دون تحويله إلى سنوي.",
+                givens: "D = 100 , C_o = 10 , C_h = 4 , C_s = 36",
+                required: "الكمية الاقتصادية مع عجز (EOQ with Shortage)",
+                steps: "تطبيق قانون العجز المطول:<br>\\[ Q = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\cdot \\sqrt{\\frac{C_h + C_s}{C_s}} \\]\n\\[ Q = \\sqrt{\\frac{2 \\cdot 100 \\cdot 10}{4}} \\cdot \\sqrt{\\frac{4 + 36}{36}} \\]\n\\[ Q = \\sqrt{500} \\cdot \\sqrt{\\frac{40}{36}} \\]\n\\[ Q = 22.36 \\cdot 1.054 \\approx 23.57 \\text{ units} \\]"
+            },
+            {
+                id: 41,
+                text: "Suppose that the demand for a product (D) is 10000 per year. The order cost (Co) is 150$ and the inventory holding cost (Ch) is 2$ per item per year. If shortages cost (Cs) is 0.75$ per item per year, Then the maximum inventory (I.max) is:",
+                textAr: "الطلب 10,000. تكلفة الطلب 150$ والاحتفاظ 2$ والعجز 0.75$. ما هو الحد الأقصى للمخزون (I.max)؟",
+                options: ["A- 639.6 units", "B- 824.1 units", "C- 312.2 units", "D- 291.9 units"],
+                optionsAr: ["أ- 639.6 وحدة", "ب- 824.1 وحدة", "ج- 312.2 وحدة", "د- 291.9 وحدة"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "يجب أن نحسب كمية EOQ أولاً بوجود عجز، ثم نستخدمها في قانون الحد الأقصى للمخزون (Imax).",
+                givens: "D = 10000 , C_o = 150 , C_h = 2 , C_s = 0.75",
+                required: "الحد الأقصى للمخزون (Imax)",
+                steps: "الخطوة الأولى إيجاد Q:<br>\\[ Q = \\sqrt{\\frac{2(10000)(150)}{2}} \\cdot \\sqrt{\\frac{2 + 0.75}{0.75}} \\]\n\\[ Q = \\sqrt{1,500,000} \\cdot \\sqrt{3.666} \\approx 1224.74 \\cdot 1.9148 = 2345.2 \\]<br>الخطوة الثانية إيجاد Imax:<br>\\[ I_{max} = Q \\cdot \\left( \\frac{C_s}{C_h + C_s} \\right) \\]\n\\[ I_{max} = 2345.2 \\cdot \\left( \\frac{0.75}{2.75} \\right) \\approx 639.6 \\]"
+            },
+            {
+                id: 42,
+                text: "Apple market order processing (D) 5000 units per year. The order cost (Co) is 2000$ and the inventory holding cost (Ch) is 2$ per item per month. The shortage cost (Cs) is 100$, Then the Shortage allowable quantity (S) is:",
+                textAr: "الطلب 5000 سنوياً. تكلفة الطلب 2000$ والاحتفاظ 2$ والعجز 100$. ما هي كمية العجز المسموح بها (S)؟",
+                options: ["A- 30 units", "B- 63 units", "C- 40 units", "D- 20 units"],
+                optionsAr: ["أ- 30 وحدة", "ب- 63 وحدة", "ج- 40 وحدة", "د- 20 وحدة"],
+                correctIndex: 1, type: "math", category: "EOQ",
+                explanation: "كمية العجز المسموح (S) تحسب بضرب الكمية EOQ في نسبة (تكلفة الاحتفاظ على مجموع التكلفتين). (مجدداً تم التعويض بـ 2 لـ Ch مباشرة بدون تحويل).",
+                givens: "D = 5000 , C_o = 2000 , C_h = 2 , C_s = 100",
+                required: "كمية العجز (Shortage allowable S)",
+                steps: "الخطوة الأولى إيجاد Q:<br>\\[ Q = \\sqrt{\\frac{2(5000)(2000)}{2}} \\cdot \\sqrt{\\frac{2 + 100}{100}} \\]\n\\[ Q = 3162.27 \\cdot 1.0099 \\approx 3193.7 \\]<br>الخطوة الثانية إيجاد S:<br>\\[ S = Q \\cdot \\left( \\frac{C_h}{C_h + C_s} \\right) \\]\n\\[ S = 3193.7 \\cdot \\left( \\frac{2}{102} \\right) \\approx 62.6 \\approx 63 \\text{ units} \\]"
+            },
+            {
+                id: 43,
+                text: "For the previous problem (Q42). Then the number of ordering during the year (order frequency) is:",
+                textAr: "لنفس مسألة (Q42). عدد الطلبيات خلال السنة (تكرار الطلب) هو تقريباً:",
+                options: ["A- 3 orders", "B- 5 orders", "C- 4 orders", "D- 2 orders"],
+                optionsAr: ["أ- 3 طلبيات", "ب- 5 طلبيات", "ج- 4 طلبيات", "د- 2 طلبيات"],
+                correctIndex: 3, type: "math", category: "EOQ",
+                explanation: "بقسمة الطلب السنوي على كمية الطلب المستخرجة سابقاً (3193.7)، نحصل على 1.56، وأقرب رقم صحيح في الخيارات هو 2.",
+                givens: "D = 5000 , EOQ (Q) = 3193.7",
+                required: "عدد الطلبيات (N)",
+                steps: "حساب التكرار:<br>\\[ N = \\frac{D}{Q} \\]\n\\[ N = \\frac{5000}{3193.7} = 1.56 \\approx 2 \\text{ orders} \\]"
+            },
+            {
+                id: 44,
+                text: "For the previous problem (Q42). Then the interval between two orders (time between orders) is:",
+                textAr: "لنفس مسألة (Q42). الوقت الفاصل بين طلبيتين (بالسنوات) هو:",
+                options: ["A- 0.30 year", "B- 0.50 year", "C- 0.63 year", "D- 0.24 year"],
+                optionsAr: ["أ- 0.30 سنة", "ب- 0.50 سنة", "ج- 0.63 سنة", "د- 0.24 سنة"],
+                correctIndex: 2, type: "math", category: "EOQ",
+                explanation: "الوقت الفاصل (T) هو قسمة الكمية (Q) على الطلب السنوي (D).",
+                givens: "EOQ (Q) = 3193.7 , D = 5000",
+                required: "الوقت الفاصل (Time T)",
+                steps: "حساب الوقت:<br>\\[ T = \\frac{Q}{D} \\]\n\\[ T = \\frac{3193.7}{5000} = 0.638 \\approx 0.63 \\text{ year} \\]"
+            },
+            {
+                id: 45,
+                text: "Average daily requirement = 600 units. Time required for refresh supplies = One month (30 days). The ordering point or re-order level is:",
+                textAr: "متوسط الاحتياج اليومي 600 وحدة. الوقت المطلوب لتجديد المخزون (فترة الانتظار) 30 يوماً. ما هي نقطة إعادة الطلب (ROP)؟",
+                options: ["A- 73,000 units", "B- 5,000 units", "C- 18,000 units", "D- 2,000 units"],
+                optionsAr: ["أ- 73,000 وحدة", "ب- 5,000 وحدة", "ج- 18,000 وحدة", "د- 2,000 وحدة"],
+                correctIndex: 2, type: "math", category: "EOQ",
+                explanation: "نقطة إعادة الطلب (ROP) تعني: متى يجب أن نطلب بضاعة جديدة؟ نحسبها بضرب الطلب اليومي في عدد أيام انتظار وصول البضاعة.",
+                givens: "Daily Demand (d) = 600 , Lead Time (L) = 30 days",
+                required: "نقطة إعادة الطلب (Re-Order Point ROP)",
+                steps: "حساب ROP:<br>\\[ ROP = d \\times L \\]\n\\[ ROP = 600 \\times 30 = 18,000 \\text{ units} \\]"
+            },
+           
+             // --- الدفعة الرابعة (من 46 إلى 60) ---
+            {
+                id: 46,
+                text: "The frequency of breakdown of a machine per month is shown in the table. The cost of a breakdown is 500$ and the cost of preventive maintenance is 625$ per month. If preventive maintenance is performed, the probability of a machine breakdown is negligible. Then Expected cost using repair policy is: Table: (0:0.15, 1:0.25, 2:0.30, 3:0.20, 4:0.10)",
+                textAr: "يوضح الجدول تكرار أعطال آلة شهرياً. تكلفة العطل 500$ وتكلفة الصيانة الوقائية 625$ شهرياً. التكلفة المتوقعة باستخدام سياسة الإصلاح (أي بدون عمل صيانة وقائية) هي: (احتمالات الأعطال: 0:0.15, 1:0.25, 2:0.30, 3:0.20, 4:0.10)",
+                options: ["A- 200 $", "B- 100 $", "C- 425 $", "D- 925 $"],
+                optionsAr: ["أ- 200 $", "ب- 100 $", "ج- 425 $", "د- 925 $"],
+                correctIndex: 3, type: "math", category: "Maintenance",
+                explanation: "لحساب تكلفة الإصلاح المتوقعة، نضرب كل عطل في احتماليته ونجمع النواتج لنعرف (متوسط الأعطال)، ثم نضرب هذا المتوسط في تكلفة العطل الواحد (500$).",
+                givens: "Breakdown = 500\\$ , PM = 625\\$",
+                required: "التكلفة المتوقعة للإصلاح (Expected Repair Cost)",
+                steps: "1. العدد المتوقع للأعطال:<br>\\[ E = (0 \\times 0.15) + (1 \\times 0.25) + (2 \\times 0.30) + (3 \\times 0.20) + (4 \\times 0.10) \\]\n\\[ E = 0 + 0.25 + 0.60 + 0.60 + 0.40 = 1.85 \\text{ breakdowns} \\]<br>2. التكلفة المتوقعة للإصلاح:<br>\\[ \\text{Expected Cost} = 1.85 \\times 500 = 925 \\$ \\]"
+            },
+            {
+                id: 47,
+                text: "For Q.46: preventive maintenance would yield a savings of:",
+                textAr: "بالاعتماد على السؤال السابق (Q.46): الصيانة الوقائية ستحقق وفورات (توفير مالي) مقدارها:",
+                options: ["A- 700 $/month", "B- 400 $/month", "C- 300 $/month", "D- 100 $/month"],
+                optionsAr: ["أ- 700 $", "ب- 400 $", "ج- 300 $", "د- 100 $"],
+                correctIndex: 2, type: "math", category: "Maintenance",
+                explanation: "لمعرفة مقدار التوفير، نطرح تكلفة الصيانة الوقائية (التي تم إعطاؤها بالسؤال السابق 625$) من تكلفة الإصلاح المتوقعة (التي حسبناها 925$).",
+                givens: "Expected Repair = 925\\$ , PM Cost = 625\\$",
+                required: "مقدار التوفير (Savings)",
+                steps: "حساب الفرق:<br>\\[ \\text{Savings} = \\text{Expected Repair Cost} - \\text{PM Cost} \\]\n\\[ \\text{Savings} = 925 - 625 = 300 \\$ \\]"
+            },
+            {
+                id: 48,
+                text: "Fixed Costs are called:",
+                textAr: "التكاليف الثابتة تُسمى أيضاً:",
+                options: ["A- indirect costs.", "B- direct costs.", "C- Variable Costs.", "D- None of the above."],
+                optionsAr: ["أ- تكاليف غير مباشرة.", "ب- تكاليف مباشرة.", "ج- تكاليف متغيرة.", "د- لا شيء مما سبق."],
+                correctIndex: 0, type: "theory", category: "Theory",
+                explanation: "التكاليف الثابتة (مثل الإيجار والتأمين) لا ترتبط مباشرة بإنتاج وحدة معينة بحد ذاتها، لذلك تُصنف إدارياً ومحاسبياً كـ 'تكاليف غير مباشرة - Indirect costs'."
+            },
+            {
+                id: 49,
+                text: "Variable Costs are:",
+                textAr: "التكاليف المتغيرة هي:",
+                options: ["A- costs which do not vary directly with the level of output or production.", "B- costs which do vary directly with the level of output or production.", "C- Costs that contain both variable and fixed costs.", "D- None of the above."],
+                optionsAr: ["أ- التكاليف التي لا تتغير مباشرة مع مستوى الإنتاج.", "ب- التكاليف التي تتغير مباشرة مع مستوى الإنتاج.", "ج- التكاليف التي تحتوي على جزء ثابت ومتغير.", "د- لا شيء مما سبق."],
+                correctIndex: 1, type: "theory", category: "Theory",
+                explanation: "من اسمها، التكاليف المتغيرة (Variable Costs) مثل المواد الخام، تتغير طردياً وبشكل مباشر مع زيادة أو نقصان كمية الإنتاج."
+            },
+            {
+                id: 50,
+                text: "Sales value when Fixed cost = 10,000 ID, Variable cost per unit = 10 ID, Selling price per unit= 25 ID, Estimating profit = 200,000 ID.",
+                textAr: "قيمة المبيعات عندما التكلفة الثابتة = 10,000، التكلفة المتغيرة للوحدة = 10، سعر البيع للوحدة = 25، والربح المقدر (المستهدف) = 200,000:",
+                options: ["A- 800,000 ID", "B- 210,000 ID", "C- 350,000 ID", "D- 570,000 ID"],
+                optionsAr: ["أ- 800,000 دينار", "ب- 210,000 دينار", "ج- 350,000 دينار", "د- 570,000 دينار"],
+                correctIndex: 2, type: "math", category: "BEP",
+                explanation: "يطلب (قيمة المبيعات). أولاً نجد كمية الوحدات اللازمة للوصول للربح المستهدف، ثم نضرب هذه الكمية في سعر البيع.",
+                givens: "FC = 10,000 , V = 10 , S = 25 , Profit = 200,000",
+                required: "قيمة المبيعات (Sales Value)",
+                steps: "1. إيجاد الكمية Q:<br>\\[ Q = \\frac{FC + Profit}{S - V} = \\frac{10000 + 200000}{25 - 10} \\]\n\\[ Q = \\frac{210000}{15} = 14,000 \\text{ units} \\]<br>2. إيجاد قيمة المبيعات:<br>\\[ \\text{Sales Value} = 14,000 \\times 25 = 350,000 \\text{ ID} \\]"
+            },
+            {
+                id: 51,
+                text: "Given: Variable cost per unit = 24 ID, Selling price per unit= 48 ID, the contribution if the total sales 800,000 ID is:",
+                textAr: "معطى: التكلفة المتغيرة للوحدة = 24، سعر البيع للوحدة = 48. مقدار 'المساهمة' (Contribution) إذا كان إجمالي المبيعات 800,000 هو:",
+                options: ["A- 600,000 ID", "B- 900,000 ID", "C- 400,000 ID", "D- 500,000 ID"],
+                optionsAr: ["أ- 600,000 دينار", "ب- 900,000 دينار", "ج- 400,000 دينار", "د- 500,000 دينار"],
+                correctIndex: 2, type: "math", category: "BEP",
+                explanation: "نحسب 'نسبة هامش المساهمة' (وهي سعر البيع ناقص التكلفة المتغيرة مقسوماً على سعر البيع)، ونجد أنها النصف (0.5)، ثم نضربها في إجمالي المبيعات.",
+                givens: "V = 24 , S = 48 , Total Sales = 800,000",
+                required: "المساهمة الإجمالية (Total Contribution)",
+                steps: "1. نسبة الهامش (CMR):<br>\\[ CMR = \\frac{S - V}{S} = \\frac{48 - 24}{48} = 0.5 \\]<br>2. إجمالي المساهمة:<br>\\[ \\text{Total Contribution} = 800,000 \\times 0.5 = 400,000 \\text{ ID} \\]"
+            },
+            {
+                id: 52,
+                text: "The Variable costs are:",
+                textAr: "التكاليف المتغيرة هي:",
+                options: ["A- Direct Costs that vary directly with the level of output or production.", "B- Indirect Costs that do not vary directly with the level of output or production.", "C- Indirect Costs that vary directly with the level of output or production.", "D- Direct Costs that do not vary directly with the level of output or production."],
+                optionsAr: ["أ- تكاليف مباشرة تتغير بشكل مباشر مع مستوى الإنتاج.", "ب- تكاليف غير مباشرة لا تتغير بشكل مباشر مع مستوى الإنتاج.", "ج- تكاليف غير مباشرة تتغير بشكل مباشر مع مستوى الإنتاج.", "د- تكاليف مباشرة لا تتغير بشكل مباشر مع مستوى الإنتاج."],
+                correctIndex: 0, type: "theory", category: "Theory",
+                explanation: "عكس التكاليف الثابتة، التكاليف المتغيرة غالباً ما تكون 'تكاليف مباشرة - Direct Costs' لأنها ترتبط بمواد العمل المباشرة وتتغير بشكل طردي مع الإنتاج."
+            },
+            {
+                id: 53,
+                text: "Example of the Fixed costs:",
+                textAr: "من الأمثلة على التكاليف الثابتة (Fixed Costs):",
+                options: ["A- direct materials, direct labor, and part of manufacturing overhead", "B- rent, taxes, and insurance on manufacturing plant", "C- light, heat, and power", "D- All of above"],
+                optionsAr: ["أ- المواد المباشرة، العمالة المباشرة، وجزء من المصاريف الصناعية.", "ب- الإيجار، الضرائب، والتأمين على مصنع الإنتاج.", "ج- الإضاءة، التدفئة، والطاقة.", "د- جميع ما سبق."],
+                correctIndex: 1, type: "theory", category: "Theory",
+                explanation: "الإيجار والضرائب والتأمين هي مصاريف إجبارية يجب دفعها سواء تم الإنتاج أم لا، وبنفس المبلغ، لذلك تعتبر أفضل مثال لـ 'التكاليف الثابتة'."
+            },
+            {
+                id: 54,
+                text: "For Max Z=9X1+5X2. And the points of feasible region bounded by the following points: (0,0), (10,0), (0,12), (6,8). Then the maximum value of Z is at point:",
+                textAr: "لتعظيم المعادلة Z=9X1+5X2. نقاط منطقة الحل الممكنة هي: (0,0), (10,0), (0,12), (6,8). القيمة العظمى تقع عند النقطة:",
+                options: ["A- (0,0)", "B- (10,0)", "C- (0,12)", "D- (6,8)"],
+                optionsAr: ["أ- (0,0)", "ب- (10,0)", "ج- (0,12)", "د- (6,8)"],
+                correctIndex: 3, type: "math", category: "LP",
+                explanation: "نعوض كل نقطة في معادلة الربح المعطاة. النقطة التي تنتج أكبر رقم هي الحل الأمثل لأن المطلوب (Max).",
+                givens: "Z = 9X_1 + 5X_2",
+                required: "أكبر قيمة (Maximum value of Z)",
+                steps: "التعويض:<br>\\[ (0,0) : Z = 9(0) + 5(0) = 0 \\]\n\\[ (10,0) : Z = 9(10) + 5(0) = 90 \\]\n\\[ (0,12) : Z = 9(0) + 5(12) = 60 \\]\n\\[ (6,8) : Z = 9(6) + 5(8) = 54 + 40 = 94 \\leftarrow \\text{Max} \\]"
+            },
+            {
+                id: 55,
+                text: "For Min Z=5X1+8X2. And the points of feasible region bounded by the following points: (0,0), (0,4), (5,0), (5,6). Then the Minimum value of Z is at point:",
+                textAr: "لتقليل المعادلة Z=5X1+8X2. نقاط منطقة الحل الممكنة هي: (0,0), (0,4), (5,0), (5,6). القيمة الصغرى (Minimum) تقع عند النقطة:",
+                options: ["A- (0,0)", "B- (0,4)", "C- (5,0)", "D- (5,6)"],
+                optionsAr: ["أ- (0,0)", "ب- (0,4)", "ج- (5,0)", "د- (5,6)"],
+                correctIndex: 0, type: "math", category: "LP",
+                explanation: "بما أن المطلوب تقليل التكلفة (Min)، نعوض النقاط ونختار النقطة التي تعطينا أقل ناتج.",
+                givens: "Z = 5X_1 + 8X_2",
+                required: "أصغر قيمة (Minimum value of Z)",
+                steps: "التعويض:<br>\\[ (0,0) : Z = 5(0) + 8(0) = 0 \\leftarrow \\text{Min} \\]\n\\[ (0,4) : Z = 5(0) + 8(4) = 32 \\]\n\\[ (5,0) : Z = 5(5) + 8(0) = 25 \\]\n\\[ (5,6) : Z = 5(5) + 8(6) = 25 + 48 = 73 \\]"
+            },
+            {
+                id: 56,
+                text: "For Max Z=7X1+6X2. And the points of feasible region bounded by the following points: (0,20), (30,0), (8,7), (7,8). Then the maximum value of Z is at point:",
+                textAr: "لتعظيم المعادلة Z=7X1+6X2. نقاط منطقة الحل الممكنة هي: (0,20), (30,0), (8,7), (7,8). القيمة العظمى تقع عند النقطة:",
+                options: ["A- (0,20)", "B- (30,0)", "C- (8,7)", "D- (7,8)"],
+                optionsAr: ["أ- (0,20)", "ب- (30,0)", "ج- (8,7)", "د- (7,8)"],
+                correctIndex: 1, type: "math", category: "LP",
+                explanation: "نفس طريقة الحل المعتادة للبرمجة الخطية، نعوض لاكتشاف أعلى رقم (Max).",
+                givens: "Z = 7X_1 + 6X_2",
+                required: "أكبر قيمة (Maximum value of Z)",
+                steps: "التعويض:<br>\\[ (0,20) : Z = 7(0) + 6(20) = 120 \\]\n\\[ (30,0) : Z = 7(30) + 6(0) = 210 \\leftarrow \\text{Max} \\]\n\\[ (8,7) : Z = 7(8) + 6(7) = 56 + 42 = 98 \\]\n\\[ (7,8) : Z = 7(7) + 6(8) = 49 + 48 = 97 \\]"
+            },
+            {
+                id: 57,
+                text: "For Max Z=7X1+6X2. And the points of feasible region bounded by the following points: (0,20), (30,0), (8,7), (7,8). Then the Minimum value of Z is at point:",
+                textAr: "لتعظيم المعادلة Z=7X1+6X2. نقاط منطقة الحل هي: (0,20), (30,0), (8,7), (7,8). (هنا السؤال يطلب القيمة الصغرى Minimum بين هذه النقاط):",
+                options: ["A- (0,20)", "B- (30,0)", "C- (8,7)", "D- (7,8)"],
+                optionsAr: ["أ- (0,20)", "ب- (30,0)", "ج- (8,7)", "د- (7,8)"],
+                correctIndex: 3, type: "math", category: "LP",
+                explanation: "نفس أرقام السؤال السابق، ولكن المطلوب هو استخراج (أصغر ناتج) من بين هذه التعويضات.",
+                givens: "Z = 7X_1 + 6X_2",
+                required: "أصغر قيمة (Minimum value of Z)",
+                steps: "بمراجعة النواتج السابقة:<br>\\[ (0,20) : 120 \\]\n\\[ (30,0) : 210 \\]\n\\[ (8,7) : 98 \\]\n\\[ (7,8) : 97 \\leftarrow \\text{Min} \\]"
+            },
+            {
+                id: 58,
+                text: "Suppose that the demand for a product is D=500 unit per year, order cost is Co=20 $ and the inventory holding cost is Ch=5 $ per item per year. Assuming shortages are not allowed, then the Economic Order Quantity EOQ (unit) is:",
+                textAr: "الطلب السنوي 500 وحدة. تكلفة الطلب 20$. تكلفة الاحتفاظ 5$ للوحدة سنوياً. بافتراض عدم وجود عجز، فإن الكمية الاقتصادية للطلب (EOQ) هي:",
+                options: ["A- 66", "B- 65", "C- 63", "D- 62"],
+                optionsAr: ["أ- 66", "ب- 65", "ج- 63", "د- 62"],
+                correctIndex: 2, type: "math", category: "EOQ",
+                explanation: "تطبيق مباشر لقانون الكمية الاقتصادية الأساسي (بدون عجز).",
+                givens: "D = 500 , C_o = 20\\$ , C_h = 5\\$",
+                required: "الكمية الاقتصادية (EOQ)",
+                steps: "تطبيق القانون:<br>\\[ EOQ = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\]\n\\[ EOQ = \\sqrt{\\frac{2 \\cdot 500 \\cdot 20}{5}} \\]\n\\[ EOQ = \\sqrt{\\frac{20000}{5}} = \\sqrt{4000} \\approx 63.24 \\approx 63 \\text{ units} \\]"
+            },
+            {
+                id: 59,
+                text: "For the same problem in Q.57. The Time between orders is:",
+                textAr: "لنفس معطيات السؤال السابق (الطلب 500 و EOQ=63.24). الوقت الفاصل بين الطلبيات بالسنوات هو:",
+                options: ["A- 1.5 year", "B- 0.44 year", "C- 0.122 year", "D- 0.126 year"],
+                optionsAr: ["أ- 1.5 سنة", "ب- 0.44 سنة", "ج- 0.122 سنة", "د- 0.126 سنة"],
+                correctIndex: 3, type: "math", category: "EOQ",
+                explanation: "الوقت الفاصل (T) يساوي الكمية (EOQ) مقسومة على الطلب السنوي الكلي (D).",
+                givens: "D = 500 , EOQ = 63.24",
+                required: "الوقت الفاصل (Time T)",
+                steps: "التعويض:<br>\\[ T = \\frac{EOQ}{D} \\]\n\\[ T = \\frac{63.24}{500} \\approx 0.12648 \\approx 0.126 \\text{ year} \\]"
+            },
+            {
+                id: 60,
+                text: "For the same problem in Q.57. The annual cost is:",
+                textAr: "لنفس معطيات السؤال السابق (الطلب=500، تكلفة الطلب=20، تكلفة الاحتفاظ=5). التكلفة السنوية الكلية هي:",
+                options: ["A- 318.55 $", "B- 316.22 $", "C- 311.11 $", "D- 314.34 $"],
+                optionsAr: ["أ- 318.55 $", "ب- 316.22 $", "ج- 311.11 $", "د- 314.34 $"],
+                correctIndex: 1, type: "math", category: "EOQ",
+                explanation: "نستخدم قانون التكلفة الإجمالية (TC) للكمية الاقتصادية بدون عجز (الذي يحتوي على القيم تحت الجذر مضروبة في بعضها في 2).",
+                givens: "D = 500 , C_o = 20\\$ , C_h = 5\\$",
+                required: "التكلفة السنوية الكلية (Total Cost TC)",
+                steps: "التعويض:<br>\\[ TC = \\sqrt{2 \\cdot D \\cdot C_o \\cdot C_h} \\]\n\\[ TC = \\sqrt{2 \\cdot 500 \\cdot 20 \\cdot 5} \\]\n\\[ TC = \\sqrt{100,000} \\approx 316.227 \\approx 316.22 \\$ \\]"
+            },
+            
+            // --- الدفعة الخامسة (من 61 إلى 75) ---
+            {
+                id: 61,
+                text: "Suppose that the Demand for a product is D=400 units per month and the items are withdrawn at a constant rate. The setup cost each time is undertaken to replenish inventory is Co=30$ The inventory holding cost is Ch=0.5$ per item per month. Assume that shortage is allowed with Cs=1.5$, Then EOQ (unit) is:",
+                textAr: "الطلب 400 وحدة شهرياً. تكلفة الطلب 30$. تكلفة الاحتفاظ 0.5$ شهرياً. تكلفة العجز 1.5$. ما هي الكمية الاقتصادية (EOQ)؟",
+                options: ["A- 438 unit", "B- 450 unit", "C- 311 unit", "D- 314 unit"],
+                optionsAr: ["أ- 438 وحدة", "ب- 450 وحدة", "ج- 311 وحدة", "د- 314 وحدة"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "🚨 تنبيه خطير للامتحان: يوجد خطأ علمي فادح في طريقة حل الأستاذ لهذا السؤال بالملزمة. فقد قام بتحويل الطلب إلى سنوي (4800)، ثم استخدم (Cs) بدلاً من (Ch) في المقام، وتجاهل الجزء الثاني من قانون العجز تماماً! سنكتب لك خطواته الخاطئة لتتطابق مع خياره في الامتحان.",
+                givens: "D = 400/month , C_o = 30\\$ , C_h = 0.5\\$ , C_s = 1.5\\$",
+                required: "الكمية الاقتصادية (EOQ) - بطريقة الأستاذ",
+                steps: "طريقة الأستاذ لاستخراج الخيار A:<br>1. تحويل الطلب لسنوي: \\( D = 400 \\times 12 = 4800 \\)<br>2. تطبيق القانون بخطأ (القسمة على Cs بدلاً من Ch وتجاهل جذر العجز):<br>\\[ Q = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_s}} \\]\n\\[ Q = \\sqrt{\\frac{2 \\cdot 4800 \\cdot 30}{1.5}} \\]\n\\[ Q = \\sqrt{\\frac{288000}{1.5}} = \\sqrt{192000} \\approx 438.17 \\text{ units} \\]"
+            },
+            {
+                id: 62,
+                text: "For the same problem in Q.61. the maximum inventory Imax is:",
+                textAr: "لنفس مسألة السؤال السابق (Q.61). الحد الأقصى للمخزون (Imax) هو:",
+                options: ["A- 150 unit", "B- 110 unit", "C- 113 unit", "D- 112 unit"],
+                optionsAr: ["أ- 150 وحدة", "ب- 110 وحدة", "ج- 113 وحدة", "د- 112 وحدة"],
+                correctIndex: 1, type: "math", category: "EOQ",
+                explanation: "🚨 خطأ آخر للأستاذ: في هذا السؤال يطلب الحد الأقصى للمخزون (Imax)، لكنه استخدم قانون (العجز المسموح S) لاستخراج الناتج! سنعوض بقانون S بدلاً من Imax لنصل للرقم 110.",
+                givens: "Q = 438.17 , C_h = 0.5 , C_s = 1.5",
+                required: "الحد الأقصى للمخزون (Imax) - خطأ",
+                steps: "استخدام قانون العجز S بدلاً من Imax:<br>\\[ \\text{Formula used: } S = Q \\cdot \\left( \\frac{C_h}{C_h + C_s} \\right) \\]\n\\[ S = 438.17 \\cdot \\left( \\frac{0.5}{0.5 + 1.5} \\right) \\]\n\\[ S = 438.17 \\cdot \\left( \\frac{0.5}{2.0} \\right) \\]\n\\[ S = 438.17 \\cdot 0.25 = 109.54 \\approx 110 \\text{ units} \\]"
+            },
+            {
+                id: 63,
+                text: "For the same problem in Q.61 the time between orders is:",
+                textAr: "لنفس مسألة (Q.61) الوقت الفاصل بين الطلبيات (بالأشهر) هو:",
+                options: ["A- 1.231", "B- 1.121", "C- 1.022", "D- 1.095"],
+                optionsAr: ["أ- 1.231 شهر", "ب- 1.121 شهر", "ج- 1.022 شهر", "د- 1.095 شهر"],
+                correctIndex: 3, type: "math", category: "EOQ",
+                explanation: "بما أن الطلب معطى شهرياً (400)، فإن قسمة الكمية على الطلب ستعطينا الوقت الفاصل بالأشهر.",
+                givens: "Q = 438.17 , D_{monthly} = 400",
+                required: "الوقت الفاصل (Time T)",
+                steps: "حساب الوقت بالأشهر:<br>\\[ T = \\frac{Q}{D_{monthly}} \\]\n\\[ T = \\frac{438.17}{400} \\approx 1.095 \\text{ months} \\]"
+            },
+            {
+                id: 64,
+                text: "For the same problem in Q.61 the order frequency is:",
+                textAr: "لنفس مسألة (Q.61) تكرار الطلب (عدد الطلبيات شهرياً) هو:",
+                options: ["A- 0.913", "B- 0.121", "C- 1.022", "D- 0.095"],
+                optionsAr: ["أ- 0.913", "ب- 0.121", "ج- 1.022", "د- 0.095"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "تكرار الطلب (N) هو مقلوب الوقت الفاصل، أي نقسم الطلب الشهري على كمية الطلب.",
+                givens: "D_{monthly} = 400 , Q = 438.17",
+                required: "تكرار الطلب (Frequency N)",
+                steps: "حساب التكرار:<br>\\[ N = \\frac{D_{monthly}}{Q} \\]\n\\[ N = \\frac{400}{438.17} \\approx 0.9128 \\approx 0.913 \\text{ orders} \\]"
+            },
+            {
+                id: 65,
+                text: "Material is used as Maximum usage 50 unit/weeks and the Maximum re-order period is 5 weeks, then the Ordering point or re-order level is:",
+                textAr: "يتم استخدام مادة كحد أقصى 50 وحدة/أسبوع، وأقصى فترة لإعادة الطلب (الانتظار) هي 5 أسابيع، فإن نقطة إعادة الطلب (ROP) هي:",
+                options: ["A- 203", "B- 250", "C- 211", "D- 215"],
+                optionsAr: ["أ- 203 وحدة", "ب- 250 وحدة", "ج- 211 وحدة", "د- 215 وحدة"],
+                correctIndex: 1, type: "math", category: "EOQ",
+                explanation: "نقطة إعادة الطلب (ROP) تساوي (الاستخدام الأقصى) مضروباً في (أقصى فترة انتظار).",
+                givens: "Max Usage (d) = 50 , Max Lead Time (L) = 5",
+                required: "نقطة إعادة الطلب (ROP)",
+                steps: "تطبيق قانون ROP:<br>\\[ ROP = d \\times L \\]\n\\[ ROP = 50 \\times 5 = 250 \\text{ units} \\]"
+            },
+            {
+                id: 66,
+                text: "For Fixed Cost FC=60,000$, Unit variable cost UVC = 20 $ and Unit selling price USP=35 $, then the Unit U is:",
+                textAr: "لدينا التكلفة الثابتة = 60,000$، التكلفة المتغيرة = 20$ وسعر البيع = 35$، إذن عدد الوحدات للتعادل (U) هو:",
+                options: ["A- 2000", "B- 6000", "C- 5000", "D- 4000"],
+                optionsAr: ["أ- 2000 وحدة", "ب- 6000 وحدة", "ج- 5000 وحدة", "د- 4000 وحدة"],
+                correctIndex: 3, type: "math", category: "BEP",
+                explanation: "تطبيق مباشر لقانون نقطة التعادل بالوحدات.",
+                givens: "FC = 60,000\\$ , V = 20\\$ , S = 35\\$",
+                required: "وحدات التعادل (BEP Units)",
+                steps: "التعويض:<br>\\[ U = \\frac{FC}{S - V} \\]\n\\[ U = \\frac{60,000}{35 - 20} \\]\n\\[ U = \\frac{60,000}{15} = 4000 \\text{ units} \\]"
+            },
+            {
+                id: 67,
+                text: "For the Company ABC sells fruits for USP = $ 10 per unit. Their fixed cost is F.C=$600 Their variable cost UVC= $ 6 per unit. the BEP is:",
+                textAr: "تبيع شركة فواكه بسعر 10$ للوحدة. تكلفتها الثابتة 600$ والتكلفة المتغيرة 6$ للوحدة. نقطة التعادل (BEP) هي:",
+                options: ["A- 2200", "B- 1500", "C- 2100", "D- 3500"],
+                optionsAr: ["أ- 2200$", "ب- 1500$", "ج- 2100$", "د- 3500$"],
+                correctIndex: 1, type: "math", category: "BEP",
+                explanation: "بما أن عدد الوحدات (150) غير موجود في الخيارات، فالمطلوب هو قيمة المبيعات بالدولار.",
+                givens: "S = 10\\$ , FC = 600\\$ , V = 6\\$",
+                required: "قيمة التعادل (BEP Sales)",
+                steps: "1. إيجاد الوحدات:<br>\\[ BEP_{units} = \\frac{600}{10 - 6} = \\frac{600}{4} = 150 \\text{ units} \\]<br>2. إيجاد القيمة:<br>\\[ BEP_{sales} = 150 \\times 10 = 1500 \\$ \\]"
+            },
+            {
+                id: 68,
+                text: "Company sells Books for USP=$20,000 a unit. Their fixed cost is F.C=$ 600,000. Their variable cost is UVC=5,000 per unit. Then to get profit $ 30,000 what is the quantity U?",
+                textAr: "تبيع شركة كتباً بسعر 20,000$. التكلفة الثابتة 600,000$ والمتغيرة 5,000$. للحصول على ربح مقداره 30,000$ ما هي الكمية (U)؟",
+                options: ["A- 42 item", "B- 29 item", "C- 21 item", "D- 32 item"],
+                optionsAr: ["أ- 42 وحدة", "ب- 29 وحدة", "ج- 21 وحدة", "د- 32 وحدة"],
+                correctIndex: 0, type: "math", category: "BEP",
+                explanation: "نجمع الربح المستهدف مع التكلفة الثابتة في البسط ثم نقسم على هامش الربح.",
+                givens: "S = 20,000\\$ , FC = 600,000\\$ , V = 5,000\\$ , Profit = 30,000\\$",
+                required: "الكمية للربح المستهدف",
+                steps: "التعويض:<br>\\[ U = \\frac{FC + Profit}{S - V} \\]\n\\[ U = \\frac{600,000 + 30,000}{20,000 - 5,000} \\]\n\\[ U = \\frac{630,000}{15,000} = 42 \\text{ items} \\]"
+            },
+            {
+                id: 69,
+                text: "Company sells books for USP=$ 50 a unit. Their fixed cost is F.C=$6,000 Their variable cost is UVC=$20 per unit. If the company produce quantity Q(units)=300, So the profit is:",
+                textAr: "تبيع شركة كتباً بسعر 50$. التكلفة الثابتة 6,000$ والمتغيرة 20$. إذا أنتجت الشركة 300 وحدة، فإن الربح هو:",
+                options: ["A- 3.500 $", "B- 3.000 $", "C- 4.500 $", "D- 2.500 $"],
+                optionsAr: ["أ- 3500 $", "ب- 3000 $", "ج- 4500 $", "د- 2500 $"],
+                correctIndex: 1, type: "math", category: "BEP",
+                explanation: "الربح يساوي الدخل من الوحدات مطروحاً منه المصاريف الثابتة.",
+                givens: "S = 50\\$ , FC = 6,000\\$ , V = 20\\$ , Q = 300",
+                required: "الربح (Profit)",
+                steps: "التعويض:<br>\\[ \\text{Profit} = Q(S - V) - FC \\]\n\\[ \\text{Profit} = 300(50 - 20) - 6000 \\]\n\\[ \\text{Profit} = 300(30) - 6000 \\]\n\\[ \\text{Profit} = 9000 - 6000 = 3000 \\$ \\]"
+            },
+            {
+                id: 70,
+                text: "Company wants to purchase a machine A or B to produce items. The USP =12$/item. For Machine A :UVC=4 $/unit, Annual cost=6000 $. For Machine B: UVC=2 $/unit, Annual cost=10000 $. Then:",
+                textAr: "تقارن شركة بين آلتين. سعر البيع 12$. الآلة A: تكلفة ثابتة 6000 ومتغيرة 4. الآلة B: تكلفة ثابتة 10000 ومتغيرة 2. إذن:",
+                options: ["A- Machine A produce low units than Machine B", "B- Machine B produce low units than Machine A", "C- Machine A produce equal units of Machine B", "D- None of these above answers"],
+                optionsAr: ["أ- الآلة A مخصصة لإنتاج وحدات أقل من B", "ب- الآلة B مخصصة لإنتاج وحدات أقل من A", "ج- الآلة A تنتج وحدات مساوية لـ B", "د- لا شيء مما سبق"],
+                correctIndex: 0, type: "math", category: "Machine",
+                explanation: "دائماً الآلة التي تمتلك (تكلفة ثابتة أقل) تكون هي الخيار الأفضل والأنسب لأحجام الإنتاج (المنخفضة)، وهنا الآلة A تكلفتها 6000 مقارنة بـ 10000 للآلة B.",
+                givens: "Machine A (FC=6000$) , Machine B (FC=10000$)",
+                required: "تحديد الآلة للإنتاج المنخفض",
+                steps: "بمقارنة التكاليف الثابتة:<br>الآلة A = 6000$<br>الآلة B = 10000$<br>بما أن التكلفة الثابتة للآلة A أقل، إذن هي المخصصة لإنتاج وحدات أقل (Low units)."
+            },
+
+            {
+                id: 71,
+                text: "A machine has the frequency of breakdown as in table (0:0.2, 1:0.5, 2:0.2, 3:0.1). The cost of breakdown is 1500 $. The cost of preventive maintenance is 2000 $/month. If the manager decides not to use the preventive maintenance, then saving/month is:",
+                textAr: "آلة معدل أعطالها: (0 عطل: 0.2)، (1 عطل: 0.5)، (عطلين: 0.2)، (3 أعطال: 0.1). تكلفة العطل 1500$. الصيانة الوقائية 2000$. إذا قرر المدير (عدم إجراء) الصيانة الوقائية، التوفير هو:",
+                options: ["A- 260", "B- 200", "C- 154", "D- 350"],
+                optionsAr: ["أ- 260$", "ب- 200$", "ج- 154$", "د- 350$"],
+                correctIndex: 1, type: "math", category: "Maintenance",
+                explanation: "نحسب تكلفة الإصلاح المتوقعة ونقارنها بتكلفة الصيانة الوقائية لمعرفة مقدار ما نوفره إذا لم نقم بالصيانة.",
+                givens: "Breakdown Cost = 1500\\$ , PM Cost = 2000\\$",
+                required: "التوفير عند عدم إجراء الصيانة",
+                steps: "1. متوسط الأعطال المتوقعة:<br>\\[ E = (0 \\times 0.2) + (1 \\times 0.5) + (2 \\times 0.2) + (3 \\times 0.1) \\]\n\\[ E = 0 + 0.5 + 0.4 + 0.3 = 1.2 \\]<br>2. تكلفة الإصلاح:<br>\\[ \\text{Repair} = 1.2 \\times 1500 = 1800 \\$ \\]<br>3. التوفير بترك الصيانة الوقائية:<br>\\[ \\text{Saving} = 2000 - 1800 = 200 \\$ \\]"
+            },
+            {
+                id: 72,
+                text: "Suppose that the Demand for a product is D=200 units per month and the items are withdrawn at a constant rate. The setup cost is Co=10 $. The inventory holding cost is Ch=0.2$ per item per month. Assume that shortage is allowed with Cs=0.3 $. Then EOQ is:",
+                textAr: "الطلب 200 وحدة شهرياً. تكلفة الطلب 10$. تكلفة الاحتفاظ 0.2$ شهرياً. يُسمح بالعجز وتكلفته 0.3$ شهرياً. الكمية الاقتصادية (EOQ) هي:",
+                options: ["A- 283 unit", "B- 183 unit", "C- 382 unit", "D- 582 unit"],
+                optionsAr: ["أ- 283 وحدة", "ب- 183 وحدة", "ج- 382 وحدة", "د- 582 وحدة"],
+                correctIndex: 1, type: "math", category: "EOQ",
+                explanation: "بما أن جميع المعطيات الزمنية (شهرياً)، نطبق قانون الكمية الاقتصادية مع العجز بشكل مباشر دون تحويل.",
+                givens: "D = 200 , C_o = 10 , C_h = 0.2 , C_s = 0.3",
+                required: "الكمية الاقتصادية مع عجز (EOQ)",
+                steps: "التعويض بالقانون الشامل:<br>\\[ Q = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\cdot \\sqrt{\\frac{C_h + C_s}{C_s}} \\]\n\\[ Q = \\sqrt{\\frac{2 \\cdot 200 \\cdot 10}{0.2}} \\cdot \\sqrt{\\frac{0.2 + 0.3}{0.3}} \\]\n\\[ Q = \\sqrt{20000} \\cdot \\sqrt{1.666} \\]\n\\[ Q = 141.42 \\cdot 1.2909 \\approx 182.57 \\approx 183 \\text{ units} \\]"
+            },
+            {
+                id: 73,
+                text: "For the following data: Fixed cost =400,000 ID, Variable cost per unit = 20 ID, Selling price per unit=100 ID, Estimating profit =300,000 ID. The sales value is:",
+                textAr: "البيانات: التكلفة الثابتة = 400,000، التكلفة المتغيرة = 20، سعر البيع = 100، الربح المستهدف = 300,000. قيمة المبيعات هي:",
+                options: ["A- 875000", "B- 877000", "C- 785000", "D- 984000"],
+                optionsAr: ["أ- 875,000", "ب- 877,000", "ج- 785,000", "د- 984,000"],
+                correctIndex: 0, type: "math", category: "BEP",
+                explanation: "يُطلب قيمة المبيعات. نحسب الكمية اللازمة للربح المستهدف أولاً، ثم نضربها في سعر البيع.",
+                givens: "FC = 400,000 , V = 20 , S = 100 , Profit = 300,000",
+                required: "قيمة المبيعات (Sales Value)",
+                steps: "1. إيجاد الكمية:<br>\\[ Q = \\frac{FC + Profit}{S - V} = \\frac{400,000 + 300,000}{100 - 20} \\]\n\\[ Q = \\frac{700,000}{80} = 8750 \\text{ units} \\]<br>2. إيجاد القيمة:<br>\\[ \\text{Sales Value} = 8750 \\times 100 = 875,000 \\text{ ID} \\]"
+            },
+            {
+                id: 74,
+                text: "For the following data: Fixed cost =100,000 ID, Variable cost per unit = 300 ID, Selling price per unit =500 ID, Find the operating profit at production and selling 2,000 units:",
+                textAr: "التكلفة الثابتة = 100,000، المتغيرة = 300، سعر البيع = 500. أوجد الربح التشغيلي عند إنتاج وبيع 2,000 وحدة:",
+                options: ["A- 330000", "B- 300000", "C- 310000", "D- 315000"],
+                optionsAr: ["أ- 330,000", "ب- 300,000", "ج- 310,000", "د- 315,000"],
+                correctIndex: 1, type: "math", category: "BEP",
+                explanation: "الربح يساوي هامش الربح للوحدات المباعة مطروحاً منه إجمالي التكاليف الثابتة.",
+                givens: "FC = 100,000 , V = 300 , S = 500 , Q = 2000",
+                required: "الربح (Operating Profit)",
+                steps: "التعويض:<br>\\[ \\text{Profit} = Q(S - V) - FC \\]\n\\[ \\text{Profit} = 2000(500 - 300) - 100,000 \\]\n\\[ \\text{Profit} = 2000(200) - 100,000 \\]\n\\[ \\text{Profit} = 400,000 - 100,000 = 300,000 \\text{ ID} \\]"
+            },
+            {
+                id: 75,
+                text: "A machine has the frequency of breakdown as in table (0:0.1, 1:0.3, 2:0.4, 3:0.2). The cost of breakdown is 1500 $. The cost of preventive maintenance is 2000 $/ month. If the manager decides to use the preventive maintenance, the saving/month is:",
+                textAr: "آلة معدل أعطالها: (0 عطل: 0.1)، (1 عطل: 0.3)، (عطلين: 0.4)، (3 أعطال: 0.2). تكلفة العطل 1500$. الصيانة الوقائية 2000$. إذا قرر المدير (إجراء) الصيانة الوقائية، التوفير هو:",
+                options: ["A- 500 $/month", "B- 550 $/month", "C- 450 $/month", "D- 350 $/month"],
+                optionsAr: ["أ- 500$", "ب- 550$", "ج- 450$", "د- 350$"],
+                correctIndex: 1, type: "math", category: "Maintenance",
+                explanation: "نحسب تكلفة الإصلاح المتوقعة، ونرى كم سنوفر من أموال إذا دفعنا 2000$ للصيانة الوقائية بدلاً من ترك الآلة تتعطل.",
+                givens: "Breakdown = 1500\\$ , PM = 2000\\$",
+                required: "التوفير باستخدام الصيانة (Savings from PM)",
+                steps: "1. متوسط الأعطال المتوقعة:<br>\\[ E = (0 \\times 0.1) + (1 \\times 0.3) + (2 \\times 0.4) + (3 \\times 0.2) \\]\n\\[ E = 0 + 0.3 + 0.8 + 0.6 = 1.7 \\]<br>2. تكلفة الإصلاح المتوقعة:<br>\\[ \\text{Repair} = 1.7 \\times 1500 = 2550 \\$ \\]<br>3. التوفير بإجراء الصيانة:<br>\\[ \\text{Saving} = 2550 - 2000 = 550 \\$ \\]"
+            },
+           
+            // --- الدفعة السادسة (من 76 إلى 90) ---
+            {
+                id: 76,
+                text: "Max is Z=5X1+7X2, the feasible region is bounded by the flowing Point: P1(0,0), P2(3,0), P3(6,2), P4(3,4), P5(0,4). Then the maximum value of Z is at point:",
+                textAr: "لتعظيم Z=5X1+7X2، منطقة الحل محددة بالنقاط: P1(0,0), P2(3,0), P3(6,2), P4(3,4), P5(0,4). القيمة العظمى تقع عند النقطة:",
+                options: ["A- P1", "B- P2", "C- P3", "D- P4"],
+                optionsAr: ["أ- P1", "ب- P2", "ج- P3", "د- P4"],
+                correctIndex: 2, type: "math", category: "LP",
+                explanation: "نعوض جميع النقاط المعطاة في معادلة الهدف (Z)، وبما أن المطلوب هو الأكبر (Max)، نختار النقطة التي تنتج أعلى رقم.",
+                givens: "Z = 5X_1 + 7X_2",
+                required: "أكبر قيمة لـ Z (Maximum)",
+                steps: "التعويض:<br>\\[ P1(0,0) : Z = 5(0) + 7(0) = 0 \\]\n\\[ P2(3,0) : Z = 5(3) + 7(0) = 15 \\]\n\\[ P3(6,2) : Z = 5(6) + 7(2) = 30 + 14 = 44 \\leftarrow \\text{Max} \\]\n\\[ P4(3,4) : Z = 5(3) + 7(4) = 15 + 28 = 43 \\]\n\\[ P5(0,4) : Z = 5(0) + 7(4) = 28 \\]"
+            },
+            {
+                id: 77,
+                text: "Max Z=20X1+50X2, and the points of feasible region bounded by the following points: P1(0,0), P2(0,12), P3(10,0), P4(6,8). Then the maximum value of Z is at point:",
+                textAr: "لتعظيم Z=20X1+50X2، النقاط هي: P1(0,0), P2(0,12), P3(10,0), P4(6,8). القيمة العظمى تقع عند النقطة:",
+                options: ["A- P1", "B- P2", "C- P3", "D- P4"],
+                optionsAr: ["أ- P1", "ب- P2", "ج- P3", "د- P4"],
+                correctIndex: 1, type: "math", category: "LP",
+                explanation: "نفس الفكرة، نعوض كل نقطة في المعادلة لاستخراج الرقم الأكبر.",
+                givens: "Z = 20X_1 + 50X_2",
+                required: "أكبر قيمة (Maximum)",
+                steps: "التعويض:<br>\\[ P1(0,0) : Z = 0 \\]\n\\[ P2(0,12) : Z = 20(0) + 50(12) = 600 \\leftarrow \\text{Max} \\]\n\\[ P3(10,0) : Z = 20(10) + 50(0) = 200 \\]\n\\[ P4(6,8) : Z = 20(6) + 50(8) = 120 + 400 = 520 \\]"
+            },
+            {
+                id: 78,
+                text: "Min OF Z=10X1+25X2, And the points of feasible region bounded by the following points P1(0,6), P2(0,10), P3(6,0), P4(4,0). Then the Minimum value of Z is at point:",
+                textAr: "لتقليل Z=10X1+25X2، النقاط هي: P1(0,6), P2(0,10), P3(6,0), P4(4,0). القيمة الصغرى تقع عند النقطة:",
+                options: ["A- P1", "B- P2", "C- P3", "D- P4"],
+                optionsAr: ["أ- P1", "ب- P2", "ج- P3", "د- P4"],
+                correctIndex: 3, type: "math", category: "LP",
+                explanation: "هنا المطلوب هو (Min) أي تقليل التكلفة، لذلك بعد التعويض سنبحث عن أصغر رقم.",
+                givens: "Z = 10X_1 + 25X_2",
+                required: "أصغر قيمة لـ Z (Minimum)",
+                steps: "التعويض:<br>\\[ P1(0,6) : Z = 10(0) + 25(6) = 150 \\]\n\\[ P2(0,10) : Z = 10(0) + 25(10) = 250 \\]\n\\[ P3(6,0) : Z = 10(6) + 25(0) = 60 \\]\n\\[ P4(4,0) : Z = 10(4) + 25(0) = 40 \\leftarrow \\text{Min} \\]"
+            },
+            {
+                id: 79,
+                text: "Min is Z=40X1+50X2, the flowing point bound the feasible region: P1(4,0), P2(0,6), P3(1,3), P4(2,0). Then the minimum value of Z is at point:",
+                textAr: "لتقليل Z=40X1+50X2، النقاط هي: P1(4,0), P2(0,6), P3(1,3), P4(2,0). القيمة الصغرى تقع عند النقطة:",
+                options: ["A- P1", "B- P2", "C- P3", "D- P4"],
+                optionsAr: ["أ- P1", "ب- P2", "ج- P3", "د- P4"],
+                correctIndex: 3, type: "math", category: "LP",
+                explanation: "تعويض مباشر للبحث عن القيمة الصغرى (Min).",
+                givens: "Z = 40X_1 + 50X_2",
+                required: "أصغر قيمة (Minimum)",
+                steps: "التعويض:<br>\\[ P1(4,0) : Z = 40(4) + 0 = 160 \\]\n\\[ P2(0,6) : Z = 0 + 50(6) = 300 \\]\n\\[ P3(1,3) : Z = 40(1) + 50(3) = 40 + 150 = 190 \\]\n\\[ P4(2,0) : Z = 40(2) + 0 = 80 \\leftarrow \\text{Min} \\]"
+            },
+            {
+                id: 80,
+                text: "Company sells books for USP=$50 a unit. Their fixed cost is F.C=$6,000. Their variable cost is UVC=$20 per unit. If the company produce quantity Q(units)=300, then the profit is:",
+                textAr: "تبيع شركة كتباً بسعر 50$. التكلفة الثابتة 6,000$ والمتغيرة 20$. إذا أنتجت الشركة 300 وحدة، فإن الربح هو: (مكرر من سؤال 69)",
+                options: ["A- 3.500 $", "B- 3.000 $", "C- 4.500 $", "D- 2.500 $"],
+                optionsAr: ["أ- 3500 $", "ب- 3000 $", "ج- 4500 $", "د- 2500 $"],
+                correctIndex: 1, type: "math", category: "BEP",
+                explanation: "الربح يساوي هامش المساهمة (سعر البيع ناقص المتغيرة) مضروباً في عدد الوحدات، ثم نطرح منه التكاليف الثابتة.",
+                givens: "S = 50\\$ , FC = 6,000\\$ , V = 20\\$ , Q = 300",
+                required: "الربح (Profit)",
+                steps: "التعويض:<br>\\[ \\text{Profit} = Q(S - V) - FC \\]\n\\[ \\text{Profit} = 300(50 - 20) - 6000 \\]\n\\[ \\text{Profit} = 300(30) - 6000 \\]\n\\[ \\text{Profit} = 9000 - 6000 = 3000 \\$ \\]"
+            },
+            {
+                id: 81,
+                text: "Variable costs are:",
+                textAr: "التكاليف المتغيرة هي:",
+                options: ["A- Direct Costs that vary directly with the level of output or production.", "B- Costs don't vary directly with the level of output", "C- Direct Costs that do not vary directly with the level of output or production", "D- Indirect Costs that do not vary directly with the level of output or production."],
+                optionsAr: ["أ- تكاليف مباشرة تتغير بشكل مباشر مع مستوى الإنتاج.", "ب- تكاليف لا تتغير بشكل مباشر مع مستوى الإنتاج.", "ج- تكاليف مباشرة لا تتغير مع الإنتاج.", "د- تكاليف غير مباشرة لا تتغير مع الإنتاج."],
+                correctIndex: 0, type: "theory", category: "Theory",
+                explanation: "التكاليف المتغيرة (مثل المواد الأولية) تُصنف دائماً كتكاليف 'مباشرة - Direct' وتتغير طردياً مع كمية الإنتاج."
+            },
+            {
+                id: 82,
+                text: "Assume that the demand for a product is D=5000 unit per year, order cost is Co=60$ and the inventory holding cost is Ch=12$ per item per year. Assuming shortages are not allowed, so the Economic Order Quantity EOQ (unit) is:",
+                textAr: "الطلب السنوي 5000 وحدة. تكلفة الطلب 60$ وتكلفة الاحتفاظ 12$ سنوياً. بدون عجز، الكمية الاقتصادية EOQ هي:",
+                options: ["A- 223 unit", "B- 233 unit", "C- 222 unit", "D- 333 unit"],
+                optionsAr: ["أ- 223 وحدة", "ب- 233 وحدة", "ج- 222 وحدة", "د- 333 وحدة"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "تطبيق مباشر لقانون الكمية الاقتصادية (EOQ) لعدم وجود عجز في السؤال.",
+                givens: "D = 5000 , C_o = 60\\$ , C_h = 12\\$",
+                required: "الكمية الاقتصادية (EOQ)",
+                steps: "تطبيق القانون:<br>\\[ EOQ = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\]\n\\[ EOQ = \\sqrt{\\frac{2 \\cdot 5000 \\cdot 60}{12}} \\]\n\\[ EOQ = \\sqrt{\\frac{600,000}{12}} = \\sqrt{50,000} \\approx 223.6 \\approx 223 \\text{ units} \\]"
+            },
+            {
+                id: 83,
+                text: "If D=6000 unit per year and the Economic Order Quantity EOQ (unit) is 444 unit, Time between orders is:",
+                textAr: "إذا كان الطلب 6000 سنوياً والكمية الاقتصادية (EOQ) هي 444. الوقت الفاصل بين الطلبيات بالسنوات هو:",
+                options: ["A- 0.033 year", "B- 0.074 year", "C- 0.055 year", "D- 0.066 year"],
+                optionsAr: ["أ- 0.033 سنة", "ب- 0.074 سنة", "ج- 0.055 سنة", "د- 0.066 سنة"],
+                correctIndex: 1, type: "math", category: "EOQ",
+                explanation: "الوقت الفاصل (T) هو قسمة كمية الطلب (Q) على إجمالي الطلب السنوي (D).",
+                givens: "D = 6000 , Q = 444",
+                required: "الوقت الفاصل (Time T)",
+                steps: "حساب الوقت:<br>\\[ T = \\frac{Q}{D} \\]\n\\[ T = \\frac{444}{6000} = 0.074 \\text{ year} \\]"
+            },
+            {
+                id: 84,
+                text: "Suppose that the Demand for a product is D=400 units per month and the items are withdrawn at a constant rate. The setup cost each time is undertaken to replenish inventory is Co=30$. The inventory holding cost is Ch=0.5$ per item per month. Assume that shortage is allowed with Cs=1.5$. Then EOQ (unit) is:",
+                textAr: "الطلب 400 شهرياً. تكلفة الطلب 30$. الاحتفاظ 0.5$ شهرياً، وتكلفة العجز 1.5$. الكمية الاقتصادية EOQ هي: (مكرر من سؤال 61 بنفس أخطاء الأستاذ)",
+                options: ["A- 338 unit", "B- 438 unit", "C- 538 unit", "D- 638 unit"],
+                optionsAr: ["أ- 338 وحدة", "ب- 438 وحدة", "ج- 538 وحدة", "د- 638 وحدة"],
+                correctIndex: 1, type: "math", category: "EOQ",
+                explanation: "🚨 خطأ متكرر: الأستاذ حول الطلب لسنوي (400×12=4800) وقام خطأً بالقسمة على تكلفة العجز (Cs=1.5) بدلاً من الاحتفاظ (Ch) وتجاهل الجذر الثاني للعجز تماماً. النتيجة على طريقته 438.",
+                givens: "D = 400/month , C_o = 30 , C_h = 0.5 , C_s = 1.5",
+                required: "الكمية الاقتصادية (EOQ) بخطأ الأستاذ",
+                steps: "خطوات الأستاذ الخاطئة:<br>\\[ D_{annual} = 400 \\times 12 = 4800 \\]\n\\[ Q = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_s \\text{ (بدل الاحتفاظ)}}} \\]\n\\[ Q = \\sqrt{\\frac{2 \\cdot 4800 \\cdot 30}{1.5}} = \\sqrt{192,000} \\approx 438.17 \\]"
+            },
+            {
+                id: 85,
+                text: "What The maximum inventory Imax? Ch=0.6$ per item per month, shortage is allowed with Cs=1.6$ and EOQ (unit) is 444:",
+                textAr: "ما هو الحد الأقصى للمخزون (Imax)؟ تكلفة الاحتفاظ 0.6$ وتكلفة العجز 1.6$ والكمية EOQ هي 444:",
+                options: ["A- 121 unit", "B- 122 unit", "C- 123 unit", "D- 124 unit"],
+                optionsAr: ["أ- 121 وحدة", "ب- 122 وحدة", "ج- 123 وحدة", "د- 124 وحدة"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "🚨 خطأ آخر: الأستاذ يطلب الحد الأقصى للمخزون (Imax) ولكنه في الحقيقة استخدم قانون العجز المسموح به (S) لاستخراج النواتج الموجودة في الخيارات. سنطبق قانون (S) للوصول للإجابة 121.",
+                givens: "Q = 444 , C_h = 0.6 , C_s = 1.6",
+                required: "الحد الأقصى (Imax) - خطأ الأستاذ",
+                steps: "تطبيق قانون العجز S بدلاً من Imax:<br>\\[ S = Q \\cdot \\left( \\frac{C_h}{C_h + C_s} \\right) \\]\n\\[ S = 444 \\cdot \\left( \\frac{0.6}{0.6 + 1.6} \\right) = 444 \\cdot \\left( \\frac{0.6}{2.2} \\right) \\]\n\\[ S = 444 \\cdot 0.2727 \\approx 121.09 \\approx 121 \\text{ units} \\]"
+            },
+            {
+                id: 86,
+                text: "if D=400 units per month and Q is EOQ (unit) is 438 unit, What is the number of orders?",
+                textAr: "إذا كان الطلب 400 شهرياً، والكمية EOQ هي 438 وحدة، ما هو عدد الطلبيات؟",
+                options: ["A- 1 order", "B- 2 order", "C- 4 order", "D- 5 order"],
+                optionsAr: ["أ- 1 طلبية", "ب- 2 طلبية", "ج- 4 طلبيات", "د- 5 طلبيات"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "عدد الطلبيات (N) هو الطلب مقسوماً على الكمية. الطلب الشهري (400) على (438) يساوي تقريباً 0.91، وأقرب رقم صحيح في الخيارات هو (1).",
+                givens: "D_{monthly} = 400 , Q = 438",
+                required: "عدد الطلبيات (N)",
+                steps: "حساب التكرار:<br>\\[ N = \\frac{D_{monthly}}{Q} \\]\n\\[ N = \\frac{400}{438} \\approx 0.91 \\approx 1 \\text{ order} \\]"
+            },
+            {
+                id: 87,
+                text: "What is the time between orders ? If annual demand D=400 units per month is EOQ (unit) is 438 unit:",
+                textAr: "الوقت الفاصل بين الطلبيات: إذا كان الطلب 400 شهرياً والكمية 438 وحدة:",
+                options: ["A- 1.091 year", "B- 1.092 year", "C- 1.094 year", "D- 1.095 year"],
+                optionsAr: ["أ- 1.091 سنة", "ب- 1.092 سنة", "ج- 1.094 سنة", "د- 1.095 سنة"],
+                correctIndex: 3, type: "math", category: "EOQ",
+                explanation: "🚨 خطأ مطبعي: الأستاذ كتب (year) في الخيارات ولكنه قسم الأرقام الشهرية كما هي، فكان من المفترض أن تكون الإجابة (1.095 شهر). نطبق كما حلها.",
+                givens: "Q = 438 , D_{monthly} = 400",
+                required: "الوقت الفاصل (Time T)",
+                steps: "حساب الوقت:<br>\\[ T = \\frac{Q}{D} \\]\n\\[ T = \\frac{438}{400} = 1.095 \\text{ (months وليس years)} \\]"
+            },
+            {
+                id: 88,
+                text: "If the Fixed Cost FC=60,000$, Unit selling price USP=35$ and Unit variable cost UVC=20$, then the Quantity [Q] at BEP is equal to:",
+                textAr: "إذا كانت التكلفة الثابتة 60,000$، سعر البيع 35$ والتكلفة المتغيرة 20$، فإن الكمية عند نقطة التعادل تساوي:",
+                options: ["A- 2000 items", "B- 3000 items", "C- 4000 items", "D- 5000 items"],
+                optionsAr: ["أ- 2000 وحدة", "ب- 3000 وحدة", "ج- 4000 وحدة", "د- 5000 وحدة"],
+                correctIndex: 2, type: "math", category: "BEP",
+                explanation: "تطبيق مباشر لقانون التعادل بالوحدات.",
+                givens: "FC = 60,000\\$ , S = 35\\$ , V = 20\\$",
+                required: "كمية التعادل (BEP Quantity)",
+                steps: "التعويض:<br>\\[ Q = \\frac{FC}{S - V} \\]\n\\[ Q = \\frac{60,000}{35 - 20} \\]\n\\[ Q = \\frac{60,000}{15} = 4000 \\text{ items} \\]"
+            },
+            {
+                id: 89,
+                text: "If Material is used as Maximum usage 60 unit/weeks and the Maximum re- order period is 5 weeks, then the Ordering point or re-order level is:",
+                textAr: "الاستخدام الأقصى 60 وحدة أسبوعياً، وأقصى فترة لانتظار الطلب هي 5 أسابيع. نقطة إعادة الطلب (ROP) هي:",
+                options: ["A- 300 units", "B- 400 units", "C- 500 units", "D- 600 units"],
+                optionsAr: ["أ- 300 وحدة", "ب- 400 وحدة", "ج- 500 وحدة", "د- 600 وحدة"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "نقطة إعادة الطلب تساوي الاستخدام مضروباً في فترة الانتظار.",
+                givens: "Max Usage (d) = 60 , Lead Time (L) = 5",
+                required: "نقطة إعادة الطلب (ROP)",
+                steps: "حساب ROP:<br>\\[ ROP = d \\times L \\]\n\\[ ROP = 60 \\times 5 = 300 \\text{ units} \\]"
+            },
+                                // --- الدفعة المراجعة باحترافية عالية (من 90 إلى 105) ---
+            {
+                id: 90,
+                text: "Company wants to purchase a machine A or B to produce items. The USP = 12 $/item. For Machine A: UVC=4 $/unit, Annual cost= 6000 $. For Machine B: UVC=2 $/unit, Annual cost=10000 $. Then:",
+                textAr: "ترغب شركة في شراء الآلة A أو B لإنتاج عناصر. سعر بيع الوحدة = 12$. للآلة A: التكلفة المتغيرة = 4$ والتكلفة الثابتة السنوية = 6000$. للآلة B: التكلفة المتغيرة = 2$ والتكلفة الثابتة السنوية = 10000$. إذن القرار هو:",
+                options: [
+                    "A- Machine A produce low units than Machine B", 
+                    "B- Machine B produce low units than Machine A", 
+                    "C- Machine A produce equal units of Machine B", 
+                    "D- None of these above answers"
+                ],
+                optionsAr: [
+                    "أ- الآلة A مخصصة لإنتاج وحدات أقل من الآلة B", 
+                    "ب- الآلة B مخصصة لإنتاج وحدات أقل من الآلة A", 
+                    "ج- الآلة A تنتج وحدات مساوية للآلة B", 
+                    "د- لا شيء مما سبق"
+                ],
+                correctIndex: 0, type: "math", category: "Machine",
+                explanation: "القاعدة الاقتصادية لمقارنة المكائن تنص على أن الآلة التي تمتلك تكلفة ثابتة أقل، تكون دائماً هي الخيار الأنسب والأوفر لإنتاج الكميات القليلة.",
+                givens: "Machine A (FC=6000$) , Machine B (FC=10000$)",
+                required: "اختيار الآلة الأفضل للإنتاج المنخفض",
+                steps: "نقارن التكاليف الثابتة للآلتين:<br>\\[ \\text{Machine A Fixed Cost} = 6000 \\$ \\]\n\\[ \\text{Machine B Fixed Cost} = 10000 \\$ \\]\nبما أن التكلفة الثابتة للآلة A أقل، إذن نختارها لإنتاج كميات أقل (Low units)."
+            },
+            {
+                id: 91,
+                text: "Suppose that the demand for a product is D=300 units per month and the items are withdrawn at a constant rate. The setup cost each time is undertaken to replenish inventory is =$15. The inventory holding cost is h=$3 per item per month. If shortages are allowed but cost is Cs=$5 per item per month, then the EOQ size is:",
+                textAr: "الطلب على منتج هو D=300 وحدة شهرياً ويتم سحب العناصر بمعدل ثابت. تكلفة الطلب (Co) هي 15$. تكلفة الاحتفاظ (Ch) هي 3$ شهرياً. إذا كان يُسمح بالعجز وتكلفته (Cs) هي 5$ شهرياً، فإن الكمية الاقتصادية للطلب (EOQ) تساوي:",
+                options: ["A- 69 item", "B- 96 item", "C- 66 item", "D- 99 item"],
+                optionsAr: ["أ- 69 وحدة", "ب- 96 وحدة", "ج- 66 وحدة", "د- 99 وحدة"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "بما أن جميع الفترات الزمنية المعطاة في السؤال متطابقة (كلها شهرياً)، فإننا نطبق قانون الكمية الاقتصادية مع العجز مباشرة دون أي تحويلات.",
+                givens: "D = 300 , Co = 15\\$ , Ch = 3\\$ , Cs = 5\\$",
+                required: "الكمية الاقتصادية مع عجز (EOQ)",
+                steps: "نطبق قانون الكمية بوجود عجز:<br>\\[ Q = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\cdot \\sqrt{\\frac{C_h + C_s}{C_s}} \\]\nنعوض المعطيات:<br>\\[ Q = \\sqrt{\\frac{2 \\cdot 300 \\cdot 15}{3}} \\cdot \\sqrt{\\frac{3 + 5}{5}} \\]\n\\[ Q = \\sqrt{\\frac{9000}{3}} \\cdot \\sqrt{\\frac{8}{5}} \\]\n\\[ Q = \\sqrt{3000} \\cdot \\sqrt{1.6} \\]\n\\[ Q = 54.77 \\cdot 1.2649 \\approx 69.28 \\approx 69 \\text{ items} \\]"
+            },
+            {
+                id: 92,
+                text: "A machine has the frequency of breakdown as in table (0:0.1, 1:0.3, 2:0.4, 3:0.2). The cost of breakdown is 1500 $. The cost of preventive maintenance is 2000 $/ month. If the manager decides to use the preventive maintenance, the saving/month is:",
+                textAr: "آلة احتمالات أعطالها كالتالي (0 عطل: 0.1، عطل واحد: 0.3، عطلين: 0.4، 3 أعطال: 0.2). تكلفة العطل هي 1500$. تكلفة الصيانة الوقائية 2000$ شهرياً. إذا قرر المدير (إجراء) الصيانة الوقائية، فإن التوفير الشهري هو:",
+                options: ["A- 550 $/month", "B- 650 $/month", "C- 750 $/month", "D- 850 $/month"],
+                optionsAr: ["أ- 550 $ / شهر", "ب- 650 $ / شهر", "ج- 750 $ / شهر", "د- 850 $ / شهر"],
+                correctIndex: 0, type: "math", category: "Maintenance",
+                explanation: "مقدار التوفير (عند إجراء الصيانة) يُحسب بطرح تكلفة الصيانة الوقائية من التكلفة المتوقعة للإصلاح. (التوفير = التكلفة المتوقعة للإصلاح - تكلفة الصيانة).",
+                givens: "Breakdown Cost = 1500\\$ , PM Cost = 2000\\$",
+                required: "التوفير المالي (Saving)",
+                steps: "1. إيجاد متوسط الأعطال المتوقعة (E):<br>\\[ E = (0 \\cdot 0.1) + (1 \\cdot 0.3) + (2 \\cdot 0.4) + (3 \\cdot 0.2) \\]\n\\[ E = 0 + 0.3 + 0.8 + 0.6 = 1.7 \\text{ Breakdowns} \\]\n2. حساب التكلفة المتوقعة للإصلاح:<br>\\[ \\text{Repair Cost} = E \\cdot \\text{Breakdown Cost} \\]\n\\[ \\text{Repair Cost} = 1.7 \\cdot 1500 = 2550 \\$ \\]\n3. حساب مقدار التوفير:<br>\\[ \\text{Saving} = \\text{Repair Cost} - \\text{PM Cost} \\]\n\\[ \\text{Saving} = 2550 - 2000 = 550 \\$ \\]"
+            },
+            {
+                id: 93,
+                text: "For the Company sells bags for USP=$20 per unit. Their fixed cost is F.C= $ 6000. Their variable cost UVC=$8 per unit. Then the total cost and revenue at the BEP is:",
+                textAr: "شركة تبيع حقائب بسعر 20$ للوحدة. التكلفة الثابتة 6000$. التكلفة المتغيرة 8$ للوحدة. (التكلفة الكلية والإيرادات) عند نقطة التعادل تساوي:",
+                options: ["A- 6000 $", "B- 9000 $", "C- 9500 $", "D- 10000 $"],
+                optionsAr: ["أ- 6000 $", "ب- 9000 $", "ج- 9500 $", "د- 10000 $"],
+                correctIndex: 3, type: "math", category: "BEP",
+                explanation: "عند نقطة التعادل، تتساوى الإيرادات تماماً مع التكاليف الكلية. لذلك، نحسب كمية التعادل بالوحدات أولاً، ثم نضربها في سعر البيع لنحصل على الإيرادات.",
+                givens: "USP = 20\\$ , FC = 6000\\$ , UVC = 8\\$",
+                required: "الإيرادات عند التعادل (Revenue at BEP)",
+                steps: "1. قانون نقطة التعادل بالوحدات:<br>\\[ BEP_{units} = \\frac{FC}{USP - UVC} \\]\n\\[ BEP_{units} = \\frac{6000}{20 - 8} = \\frac{6000}{12} = 500 \\text{ units} \\]\n2. قانون قيمة الإيرادات:<br>\\[ \\text{Revenue} = BEP_{units} \\cdot USP \\]\n\\[ \\text{Revenue} = 500 \\cdot 20 = 10000 \\$ \\]"
+            },
+            {
+                id: 94,
+                text: "Suppose that the demand for a product is D=1000 unit per year, order cost is Co=20 $ and the inventory holding cost is Ch=5 $ per item per year. Assuming shortages are not allowed, then the Economic Order Quantity EOQ (unit) is:",
+                textAr: "الطلب على منتج هو D=1000 وحدة سنوياً، تكلفة الطلب Co=20$ وتكلفة الاحتفاظ Ch=5$ سنوياً. بافتراض عدم السماح بالعجز، فإن الكمية الاقتصادية للطلب EOQ هي:",
+                options: ["A- 89 unit", "B- 90 unit", "C- 100 unit", "D- 200 unit"],
+                optionsAr: ["أ- 89 وحدة", "ب- 90 وحدة", "ج- 100 وحدة", "د- 200 وحدة"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "تعويض مباشر في قانون الكمية الاقتصادية الأساسي (نظراً لعدم وجود عجز).",
+                givens: "D = 1000 , Co = 20\\$ , Ch = 5\\$",
+                required: "الكمية الاقتصادية (EOQ)",
+                steps: "قانون الكمية الاقتصادية بدون عجز:<br>\\[ EOQ = \\sqrt{\\frac{2 \\cdot D \\cdot Co}{Ch}} \\]\nنعوض المعطيات:<br>\\[ EOQ = \\sqrt{\\frac{2 \\cdot 1000 \\cdot 20}{5}} \\]\n\\[ EOQ = \\sqrt{\\frac{40000}{5}} \\]\n\\[ EOQ = \\sqrt{8000} \\approx 89.44 \\approx 89 \\text{ units} \\]"
+            },
+            {
+                id: 95,
+                text: "Company sells Cars for USP=$200/unit. Their fixed cost is F.C=$60,000. Their variable cost is UVC=50$/unit. Then for quantity Q=300 unit, the output is?",
+                textAr: "شركة تبيع سيارات بسعر 200$ للوحدة. تكلفتها الثابتة 60,000$. والتكلفة المتغيرة 50$ للوحدة. عند إنتاج وبيع كمية مقدارها 300 وحدة، فإن الناتج التشغيلي هو:",
+                options: [
+                    "A- OI=15000$ (profit)", 
+                    "B- OI=-15000 $ (loss)", 
+                    "C- OI=-25000 $ (loss)", 
+                    "D- OI=25000$ (profit)"
+                ],
+                optionsAr: [
+                    "أ- 15,000$ (ربح)", 
+                    "ب- 15,000$- (خسارة)", 
+                    "ج- 25,000$- (خسارة)", 
+                    "د- 25,000$ (ربح)"
+                ],
+                correctIndex: 1, type: "math", category: "BEP",
+                explanation: "الربح التشغيلي يساوي إجمالي الدخل من الوحدات مطروحاً منه إجمالي التكاليف الثابتة. إذا كان الناتج بالسالب، فهذا يعني أن الشركة تتكبد خسارة (Loss).",
+                givens: "S = 200 , FC = 60000 , V = 50 , Q = 300",
+                required: "الربح أو الخسارة التشغيلية (Operating Income)",
+                steps: "قانون الدخل التشغيلي:<br>\\[ OI = Q \\cdot (S - V) - FC \\]\nنعوض الأرقام:<br>\\[ OI = 300 \\cdot (200 - 50) - 60000 \\]\n\\[ OI = 300 \\cdot (150) - 60000 \\]\n\\[ OI = 45000 - 60000 = -15000 \\$ \\text{ (Loss / خسارة)} \\]"
+            },
+            {
+                id: 96,
+                text: "BEP is:",
+                textAr: "نقطة التعادل (BEP) تُعرّف على أنها:",
+                options: [
+                    "A- It is the relationship between a variable cost, fixed cost and volume of production (sales). No profit or loss", 
+                    "B- The unit cost decreases as volume increases", 
+                    "C- Costs that contain both variable and fixed costs", 
+                    "D- None of the above"
+                ],
+                optionsAr: [
+                    "أ- العلاقة بين التكلفة المتغيرة والثابتة وحجم الإنتاج (المبيعات) حيث لا يوجد ربح أو خسارة.", 
+                    "ب- انخفاض تكلفة الوحدة مع زيادة حجم الإنتاج.", 
+                    "ج- التكاليف التي تحتوي على كل من التكاليف المتغيرة والثابتة.", 
+                    "د- لا شيء مما سبق."
+                ],
+                correctIndex: 0, type: "theory", category: "Theory",
+                explanation: "نقطة التعادل (Break-Even Point) هي نقطة التوازن المالي، حيث تتساوى الإيرادات الكلية مع التكاليف الكلية، فلا تُحقق الشركة أرباحاً ولا تتكبد خسائر (صافي الربح = صفر)."
+            },
+            {
+                id: 97,
+                text: "A machine has the frequency of breakdown as in table (0:0.2, 1:0.5, 2:0.2, 3:0.1). The cost of breakdown is 1500 $. The cost of preventive maintenance is 2000 $/month. If the manager decides not to use the preventive maintenance, then saving/month is:",
+                textAr: "آلة احتمالات أعطالها (0 عطل: 0.2، عطل واحد: 0.5، عطلين: 0.2، 3 أعطال: 0.1). تكلفة العطل 1500$. وتكلفة الصيانة 2000$ شهرياً. إذا قرر المدير (عدم استخدام) الصيانة الوقائية، فإن التوفير الشهري هو:",
+                options: ["A- 100$/month", "B- 150 $/month", "C- 200$/month", "D- 250 $/month"],
+                optionsAr: ["أ- 100 $ / شهر", "ب- 150 $ / شهر", "ج- 200 $ / شهر", "د- 250 $ / شهر"],
+                correctIndex: 2, type: "math", category: "Maintenance",
+                explanation: "التوفير في حالة (عدم) استخدام الصيانة يُحسب بطرح التكلفة المتوقعة للإصلاح من قيمة عقد الصيانة الذي لم ندفعه. (التوفير = تكلفة الصيانة - التكلفة المتوقعة للإصلاح).",
+                givens: "Breakdown Cost = 1500\\$ , PM Cost = 2000\\$",
+                required: "التوفير المالي (Saving)",
+                steps: "1. إيجاد متوسط الأعطال المتوقعة (E):<br>\\[ E = (0 \\cdot 0.2) + (1 \\cdot 0.5) + (2 \\cdot 0.2) + (3 \\cdot 0.1) \\]\n\\[ E = 0 + 0.5 + 0.4 + 0.3 = 1.2 \\text{ Breakdowns} \\]\n2. حساب التكلفة المتوقعة للإصلاح:<br>\\[ \\text{Repair Cost} = 1.2 \\cdot 1500 = 1800 \\$ \\]\n3. حساب مقدار التوفير (بترك الصيانة):<br>\\[ \\text{Saving} = \\text{PM Cost} - \\text{Repair Cost} \\]\n\\[ \\text{Saving} = 2000 - 1800 = 200 \\$ \\]"
+            },
+            {
+                id: 98,
+                text: "Suppose that the Demand for a product is D=200 units per month and the items are withdrawn at a constant rate. The setup cost each time is undertaken to replenish inventory is Co=10 $. The inventory holding cost is Ch=0.2$ per item per month. Assume that shortage is allowed with Cs=0.3 $. Then EOQ (unit) is:",
+                textAr: "الطلب على منتج 200 وحدة شهرياً. تكلفة الطلب 10$. تكلفة الاحتفاظ بالمخزون 0.2$ شهرياً. بافتراض السماح بالعجز بتكلفة 0.3$ شهرياً. فإن الكمية الاقتصادية للطلب (EOQ) تساوي:",
+                options: ["A- 283 unit", "B- 183 unit", "C- 382 unit", "D- 582 unit"],
+                optionsAr: ["أ- 283 وحدة", "ب- 183 وحدة", "ج- 382 وحدة", "د- 582 وحدة"],
+                correctIndex: 1, type: "math", category: "EOQ",
+                explanation: "جميع المعطيات الزمنية متطابقة (شهرياً)، لذا نعوض مباشرة في قانون الكمية الاقتصادية بوجود عجز.",
+                givens: "D = 200 , Co = 10 , Ch = 0.2 , Cs = 0.3",
+                required: "الكمية الاقتصادية مع عجز (EOQ)",
+                steps: "نطبق القانون:<br>\\[ Q = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\cdot \\sqrt{\\frac{C_h + C_s}{C_s}} \\]\nالتعويض:<br>\\[ Q = \\sqrt{\\frac{2 \\cdot 200 \\cdot 10}{0.2}} \\cdot \\sqrt{\\frac{0.2 + 0.3}{0.3}} \\]\n\\[ Q = \\sqrt{\\frac{4000}{0.2}} \\cdot \\sqrt{\\frac{0.5}{0.3}} \\]\n\\[ Q = \\sqrt{20000} \\cdot \\sqrt{1.666} \\]\n\\[ Q = 141.42 \\cdot 1.29 \\approx 182.57 \\approx 183 \\text{ units} \\]"
+            },
+            {
+                id: 99,
+                text: "If Material is used as and the Maximum re- order period is 2 weeks, then the Ordering point or re-order level is 400 unit, the maximum usage is:",
+                textAr: "إذا كانت أقصى فترة لإعادة الطلب (فترة الانتظار) هي أسبوعين، ونقطة إعادة الطلب (ROP) تبلغ 400 وحدة، فإن (الحد الأقصى للاستخدام) يساوي:",
+                options: ["A- 100 unit /week", "B- 200 unit/week", "C- 300 unit/week", "D- 400 unit/ week"],
+                optionsAr: ["أ- 100 وحدة / أسبوع", "ب- 200 وحدة / أسبوع", "ج- 300 وحدة / أسبوع", "د- 400 وحدة / أسبوع"],
+                correctIndex: 1, type: "math", category: "EOQ",
+                explanation: "قانون نقطة إعادة الطلب هو (ROP = الاستخدام × فترة الانتظار). لإيجاد الاستخدام، نقوم بعملية رياضية عكسية بقسمة نقطة إعادة الطلب على فترة الانتظار.",
+                givens: "ROP = 400 , Lead Time (L) = 2 weeks",
+                required: "الاستخدام الأقصى (Maximum Usage)",
+                steps: "قانون الاستخدام:<br>\\[ \\text{Usage} = \\frac{ROP}{L} \\]\nنعوض الأرقام:<br>\\[ \\text{Usage} = \\frac{400}{2} = 200 \\text{ unit/week} \\]"
+            },
+            {
+                id: 100,
+                text: "Order cost is Co=50$ the inventory holding cost is Ch=0.5$ per item per month. And D=4000 per year, The annual cost is:",
+                textAr: "تكلفة الطلب 50$، وتكلفة الاحتفاظ 0.5$ للعنصر شهرياً. والطلب السنوي يبلغ 4000. فإن التكلفة السنوية الكلية تساوي:",
+                options: ["A- 447 unit", "B- 223 unit", "C- 213 unit", "D- 322 unit"],
+                optionsAr: ["أ- 447 (خطأ مطبعي بالوحدة)", "ب- 223", "ج- 213", "د- 322"],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "🚨 تنبيه للامتحان: توجد أخطاء في ملزمة الأستاذ هنا. الخيارات مكتوبة بكلمة (unit) بدلاً من رمز العملة ($). كما أن الأستاذ عوض تكلفة الاحتفاظ الشهرية (0.5) في القانون مباشرة دون تحويلها لسنوية. اتبع خطوات الأستاذ لتطابق الخيار الصحيح في الامتحان.",
+                givens: "D = 4000 , Co = 50 , Ch = 0.5",
+                required: "التكلفة الكلية (Total Cost TC)",
+                steps: "قانون التكلفة الكلية (بدون تحويل Ch):<br>\\[ TC = \\sqrt{2 \\cdot D \\cdot C_o \\cdot C_h} \\]\nالتعويض المباشر:<br>\\[ TC = \\sqrt{2 \\cdot 4000 \\cdot 50 \\cdot 0.5} \\]\n\\[ TC = \\sqrt{200,000} \\approx 447.2 \\]"
+            },
+            {
+                id: 101,
+                text: "P1(0,0), P2(0,7), P3(3,5), P4(6,0). For Max Z=4X1+3X2, The optimum solution is at point:",
+                textAr: "بناءً على نقاط منطقة الحل: P1(0,0), P2(0,7), P3(3,5), P4(6,0). لتعظيم المعادلة (Max Z=4x1+3x2)، ما هي القيمة العظمى للـ Z؟",
+                options: ["A- 24", "B- 27", "C- 21", "D- 23"],
+                optionsAr: ["أ- 24", "ب- 27", "ج- 21", "د- 23"],
+                correctIndex: 1, type: "math", category: "LP",
+                explanation: "🚨 تنبيه للامتحان: الأستاذ نسي كتابة معادلة الهدف (Z) في نص السؤال في الملزمة! تمت إضافتها في التطبيق (Z = 4x1 + 3x2) لتتمكن من الحل. نعوض النقاط لنرى أيها تعطي أكبر ناتج.",
+                givens: "Points: (0,0), (0,7), (3,5), (6,0) , Z = 4X_1 + 3X_2",
+                required: "القيمة العظمى (Maximum Z)",
+                steps: "نعوض النقاط في المعادلة:<br>\\[ P1(0,0): Z = 4(0) + 3(0) = 0 \\]\n\\[ P2(0,7): Z = 4(0) + 3(7) = 21 \\]\n\\[ P3(3,5): Z = 4(3) + 3(5) = 12 + 15 = 27 \\leftarrow \\text{Max} \\]\n\\[ P4(6,0): Z = 4(6) + 3(0) = 24 \\]"
+            },
+            {
+                id: 102,
+                text: "Material is used as Maximum usage 60 unit/weeks and the Maximum reorder period is 5 weeks, then the Ordering point or re-order level is:",
+                textAr: "تُستخدم مادة بمعدل استخدام أقصى يبلغ 60 وحدة/أسبوع، وأقصى فترة لإعادة الطلب (فترة الانتظار) هي 5 أسابيع. إذن نقطة إعادة الطلب (ROP) هي:",
+                options: ["A- 250 units", "B- 150 units", "C- 200 units", "D- 300 units"],
+                optionsAr: ["أ- 250 وحدة", "ب- 150 وحدة", "ج- 200 وحدة", "د- 300 وحدة"],
+                correctIndex: 3, type: "math", category: "EOQ",
+                explanation: "تُحسب نقطة إعادة الطلب (ROP) بضرب معدل الاستهلاك الأقصى في أقصى فترة انتظار لوصول البضاعة.",
+                givens: "Maximum Usage = 60 , Lead Time (L) = 5",
+                required: "نقطة إعادة الطلب (ROP)",
+                steps: "قانون ROP:<br>\\[ ROP = \\text{Usage} \\cdot L \\]\nنعوض الأرقام:<br>\\[ ROP = 60 \\cdot 5 = 300 \\text{ units} \\]"
+            },
+            {
+                id: 103,
+                text: "Suppose that the demand for a product is D=250 unit per year and the Co=$20 is Ch=$1 per item per year. Assuming shortages are not allowed, then the Economic Order Quantity, EOQ (unit) = ?",
+                textAr: "الطلب على منتج D=250 وحدة سنوياً، تكلفة الطلب Co=20$ وتكلفة الاحتفاظ Ch=1$ سنوياً. بافتراض عدم السماح بالعجز، فإن الكمية الاقتصادية للطلب EOQ تساوي:",
+                options: ["A- 80 units", "B- 90 units", "C- 110 units", "D- 100 units"],
+                optionsAr: ["أ- 80 وحدة", "ب- 90 وحدة", "ج- 110 وحدة", "د- 100 وحدة"],
+                correctIndex: 3, type: "math", category: "EOQ",
+                explanation: "تطبيق مباشر لقانون الكمية الاقتصادية الأساسي نظراً لعدم وجود تكلفة عجز.",
+                givens: "D = 250 , Co = 20\\$ , Ch = 1\\$",
+                required: "الكمية الاقتصادية (EOQ)",
+                steps: "قانون EOQ الأساسي:<br>\\[ EOQ = \\sqrt{\\frac{2 \\cdot D \\cdot Co}{Ch}} \\]\nنعوض الأرقام:<br>\\[ EOQ = \\sqrt{\\frac{2 \\cdot 250 \\cdot 20}{1}} \\]\n\\[ EOQ = \\sqrt{10000} = 100 \\text{ units} \\]"
+            },
+            {
+                id: 104,
+                text: "For the following data: sells S=100 ID per unit. The variable cost is V=60 ID per unit and the fixed cost is F=240,000 ID require. is the breakeven point = ?",
+                textAr: "سعر بيع الوحدة 100 دينار. التكلفة المتغيرة للوحدة 60 دينار، والتكلفة الثابتة 240,000 دينار. نقطة التعادل (كقيمة مبيعات) تساوي:",
+                options: ["A- 666,000 ID", "B- 600,000 ID", "C- 650,000 ID", "D- 640,000 ID"],
+                optionsAr: ["أ- 666,000 دينار", "ب- 600,000 دينار", "ج- 650,000 دينار", "د- 640,000 دينار"],
+                correctIndex: 1, type: "math", category: "BEP",
+                explanation: "بما أن الخيارات معطاة كمبالغ مالية، فإن المطلوب هو (قيمة المبيعات) عند التعادل. نجد وحدات التعادل أولاً ثم نضربها في سعر بيع الوحدة.",
+                givens: "S = 100 , V = 60 , FC = 240,000",
+                required: "قيمة المبيعات عند التعادل (BEP Sales)",
+                steps: "1. إيجاد وحدات التعادل:<br>\\[ BEP_{units} = \\frac{FC}{S - V} \\]\n\\[ BEP_{units} = \\frac{240,000}{100 - 60} = \\frac{240,000}{40} = 6000 \\text{ units} \\]\n2. إيجاد قيمة المبيعات بالدينار:<br>\\[ BEP_{sales} = BEP_{units} \\cdot S \\]\n\\[ BEP_{sales} = 6000 \\cdot 100 = 600,000 \\text{ ID} \\]"
+            },
+            {
+                id: 105,
+                text: "A machine has the frequency of breakdown as in table: (0:0.1, 1:0.6, 2:0.2, 3:0.1). The cost of breakdown is 1400$. The cost of preventive maintenance is 2000$/month. If the manager decides not to use the preventive maintenance, then saving/month is:",
+                textAr: "آلة احتمالات أعطالها: (0 عطل: 0.1، عطل واحد: 0.6، عطلين: 0.2، 3 أعطال: 0.1). تكلفة العطل هي 1400$. تكلفة الصيانة الوقائية 2000$ شهرياً. إذا قرر المدير (عدم استخدام) الصيانة، فإن التوفير شهرياً هو:",
+                options: ["A- 250$/month", "B- 200$/month", "C- 180$/month", "D- 320$/month"],
+                optionsAr: ["أ- 250 $ / شهر", "ب- 200 $ / شهر", "ج- 180 $ / شهر", "د- 320 $ / شهر"],
+                correctIndex: 2, type: "math", category: "Maintenance",
+                explanation: "التوفير في حالة عدم الصيانة يُحسب بطرح (التكلفة المتوقعة للإصلاح) من (تكلفة عقد الصيانة).",
+                givens: "Breakdown Cost = 1400\\$ , PM Cost = 2000\\$",
+                required: "التوفير المالي (Saving)",
+                steps: "1. متوسط الأعطال المتوقعة:<br>\\[ E = (0 \\cdot 0.1) + (1 \\cdot 0.6) + (2 \\cdot 0.2) + (3 \\cdot 0.1) \\]\n\\[ E = 0 + 0.6 + 0.4 + 0.3 = 1.3 \\text{ Breakdowns} \\]\n2. تكلفة الإصلاح المتوقعة:<br>\\[ \\text{Repair Cost} = 1.3 \\cdot 1400 = 1820 \\$ \\]\n3. التوفير بترك الصيانة:<br>\\[ \\text{Saving} = \\text{PM Cost} - \\text{Repair Cost} \\]\n\\[ \\text{Saving} = 2000 - 1820 = 180 \\$ \\]"
+            },
+
+                   // --- الدفعة الختامية المراجعة باحترافية (من 106 إلى 125) ---
+            {
+                id: 106,
+                text: "The rent and taxes are examples of?",
+                textAr: "الإيجارات والضرائب هي أمثلة على؟",
+                options: [
+                    "A- Variable Costs", 
+                    "B- Semi-variable", 
+                    "C- Fixed Costs", 
+                    "D- None of above"
+                ],
+                optionsAr: [
+                    "أ- التكاليف المتغيرة", 
+                    "ب- التكاليف شبه المتغيرة", 
+                    "ج- التكاليف الثابتة", 
+                    "د- لا شيء مما سبق"
+                ],
+                correctIndex: 2, type: "theory", category: "Theory",
+                explanation: "الإيجارات والضرائب والتأمين هي مصاريف تُدفع بمبلغ ثابت ولا تتأثر بزيادة أو نقصان حجم الإنتاج، لذلك تُصنف دائماً ضمن (التكاليف الثابتة - Fixed Costs)."
+            },
+            {
+                id: 107,
+                text: "IF Max Z=2x1+5x2, which point of feasible region bounded at maximum Z, point =?",
+                textAr: "لتعظيم المعادلة Z=2x1+5x2، أي من نقاط منطقة الحل الممكنة التالية تعطي القيمة العظمى؟",
+                options: [
+                    "A- P1(0,0)", 
+                    "B- P2(0,8)", 
+                    "C- P3(6,5)", 
+                    "D- P4(9,0)"
+                ],
+                optionsAr: [
+                    "أ- النقطة P1(0,0)", 
+                    "ب- النقطة P2(0,8)", 
+                    "ج- النقطة P3(6,5)", 
+                    "د- النقطة P4(9,0)"
+                ],
+                correctIndex: 1, type: "math", category: "LP",
+                explanation: "نعوض جميع النقاط المذكورة في الخيارات داخل معادلة الهدف (Z) لنكتشف أي منها ينتج أكبر رقم (Max).",
+                givens: "Z = 2x_1 + 5x_2",
+                required: "أكبر قيمة (Maximum Z)",
+                steps: "التعويض في المعادلة:<br>\\[ P1(0,0): Z = 2(0) + 5(0) = 0 \\]\n\\[ P2(0,8): Z = 2(0) + 5(8) = 40 \\leftarrow \\text{Max} \\]\n\\[ P3(6,5): Z = 2(6) + 5(5) = 12 + 25 = 37 \\]\n\\[ P4(9,0): Z = 2(9) + 5(0) = 18 \\]"
+            },
+            {
+                id: 108,
+                text: "The demand for the product is 500 units per month, Co=4000$, Ch=100$ per item per year, EOQ(Q)=692.8. Then the time between orders is?",
+                textAr: "الطلب على المنتج هو 500 وحدة شهرياً، تكلفة الطلب 4000$، وتكلفة الاحتفاظ 100$ للعنصر سنوياً. إذا كانت الكمية EOQ تساوي 692.8، فإن الوقت الفاصل بين الطلبيات بالسنوات هو:",
+                options: [
+                    "A- 0.1155 year", 
+                    "B- 0.222 year", 
+                    "C- 0.523 year", 
+                    "D- 0.4 year"
+                ],
+                optionsAr: [
+                    "أ- 0.1155 سنة", 
+                    "ب- 0.222 سنة", 
+                    "ج- 0.523 سنة", 
+                    "د- 0.4 سنة"
+                ],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "بما أن الخيارات تطلب الناتج بوحدة (السنوات - year)، فيجب علينا أولاً تحويل الطلب الشهري (500) إلى طلب سنوي بضربه في 12، ثم نقسم الكمية على الطلب السنوي.",
+                givens: "Demand = 500/month , Q = 692.8",
+                required: "الوقت الفاصل بالسنوات (Time T)",
+                steps: "1. إيجاد الطلب السنوي (D):<br>\\[ D = 500 \\cdot 12 = 6000 \\text{ units/year} \\]\n2. قانون الوقت الفاصل:<br>\\[ T = \\frac{Q}{D} \\]\nنعوض الأرقام:<br>\\[ T = \\frac{692.8}{6000} = 0.11546 \\approx 0.1155 \\text{ year} \\]"
+            },
+            {
+                id: 109,
+                text: "Find number of unit to obtain on operating profit=50,000$, sells S=10$ per unit. The variable cost is V=5$ per unit and the fixed cost is F=100,000$, number of unit = ?",
+                textAr: "أوجد عدد الوحدات اللازمة للحصول على ربح تشغيلي قدره 50,000$، علماً أن سعر البيع للوحدة 10$. التكلفة المتغيرة للوحدة 5$ والتكلفة الثابتة 100,000$. عدد الوحدات يساوي:",
+                options: [
+                    "A- 32,000 unit", 
+                    "B- 35,000 unit", 
+                    "C- 31,000 unit", 
+                    "D- 30,000 unit"
+                ],
+                optionsAr: [
+                    "أ- 32,000 وحدة", 
+                    "ب- 35,000 وحدة", 
+                    "ج- 31,000 وحدة", 
+                    "د- 30,000 وحدة"
+                ],
+                correctIndex: 3, type: "math", category: "BEP",
+                explanation: "في مسائل (الربح المستهدف)، نقوم بجمع الربح المطلوب مع التكاليف الثابتة، ثم نقسم الناتج على هامش الربح للوحدة الواحدة (سعر البيع ناقص التكلفة المتغيرة).",
+                givens: "Profit = 50,000\\$ , S = 10\\$ , V = 5\\$ , FC = 100,000\\$",
+                required: "الكمية المطلوبة للربح المستهدف (Target Q)",
+                steps: "قانون الربح المستهدف:<br>\\[ Q = \\frac{FC + \\text{Profit}}{S - V} \\]\nنعوض الأرقام:<br>\\[ Q = \\frac{100,000 + 50,000}{10 - 5} \\]\n\\[ Q = \\frac{150,000}{5} = 30,000 \\text{ units} \\]"
+            },
+            {
+                id: 110,
+                text: "If D(D=400 units per month) and Q is EOQ (unit) is (338 unit), What is the number of orders?",
+                textAr: "إذا كان الطلب (D=400 وحدة شهرياً) والكمية الاقتصادية (Q=338 وحدة)، فما هو عدد الطلبيات (تكرار الطلب)؟",
+                options: [
+                    "A- 1 order", 
+                    "B- 2 order", 
+                    "C- 4 order", 
+                    "D- 5 order"
+                ],
+                optionsAr: [
+                    "أ- 1 طلبية", 
+                    "ب- 2 طلبية", 
+                    "ج- 4 طلبيات", 
+                    "د- 5 طلبيات"
+                ],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "عدد الطلبيات أو تكرار الطلب (N) يُحسب بقسمة الطلب الكلي على كمية الطلبية الواحدة. قسمة 400 على 338 تعطي 1.18 تقريباً، وأقرب إجابة صحيحة في الخيارات هي 1.",
+                givens: "D = 400/month , Q = 338",
+                required: "عدد الطلبيات (Number of orders N)",
+                steps: "قانون تكرار الطلب:<br>\\[ N = \\frac{D}{Q} \\]\nنعوض الأرقام:<br>\\[ N = \\frac{400}{338} \\approx 1.18 \\approx 1 \\text{ order} \\]"
+            },
+            {
+                id: 111,
+                text: "The Number of ordering = 32 order, the Economic Order Quantity Q = 300 unit, The demand for product D = ?",
+                textAr: "إذا كان عدد الطلبيات = 32 طلبية، والكمية الاقتصادية للطلب Q = 300 وحدة، فإن الطلب الكلي على المنتج D يساوي:",
+                options: [
+                    "A- 6900 units per year", 
+                    "B- 8700 units per year", 
+                    "C- 7600 units per year", 
+                    "D- 9600 units per year"
+                ],
+                optionsAr: [
+                    "أ- 6900 وحدة سنوياً", 
+                    "ب- 8700 وحدة سنوياً", 
+                    "ج- 7600 وحدة سنوياً", 
+                    "د- 9600 وحدة سنوياً"
+                ],
+                correctIndex: 3, type: "math", category: "EOQ",
+                explanation: "بما أن (عدد الطلبيات = الطلب الكلي ÷ كمية الطلبية)، فإننا نقوم بعملية رياضية عكسية: (الطلب الكلي = عدد الطلبيات × كمية الطلبية الواحدة).",
+                givens: "N = 32 orders , Q = 300 units",
+                required: "الطلب الكلي (Demand D)",
+                steps: "قانون الطلب الكلي:<br>\\[ D = N \\cdot Q \\]\nنعوض الأرقام:<br>\\[ D = 32 \\cdot 300 = 9600 \\text{ units} \\]"
+            },
+            {
+                id: 112,
+                text: "A machine has the frequency of breakdown as in table: (0:0.2, 1:0.3, 2:0.4, 3:0.1). The cost of breakdown is 1300$. The cost of preventive maintenance is 1400$/month. What Should the manager use?",
+                textAr: "آلة لها تكرار أعطال كما في الجدول: (0 عطل: 0.2، عطل واحد: 0.3، عطلين: 0.4، 3 أعطال: 0.1). تكلفة العطل هي 1300$. تكلفة الصيانة الوقائية 1400$ شهرياً. ماذا يجب على المدير أن يستخدم؟",
+                options: [
+                    "A- use the prevent maintenance", 
+                    "B- be cheaper to repair the machine", 
+                    "C- both A, B", 
+                    "D- None of the above"
+                ],
+                optionsAr: [
+                    "أ- استخدام الصيانة الوقائية", 
+                    "ب- إصلاح الآلة سيكون أرخص", 
+                    "ج- كلا الإجابتين (أ، ب)", 
+                    "د- لا شيء مما سبق"
+                ],
+                correctIndex: 0, type: "math", category: "Maintenance",
+                explanation: "لاتخاذ القرار الإداري الصحيح، نحسب التكلفة المتوقعة للإصلاح ونقارنها بتكلفة عقد الصيانة، ثم نختار الخيار الأرخص (الأقل تكلفة).",
+                givens: "Breakdown Cost = 1300\\$ , PM Cost = 1400\\$",
+                required: "اتخاذ القرار الإداري (Decision)",
+                steps: "1. متوسط الأعطال (E):<br>\\[ E = (0 \\cdot 0.2) + (1 \\cdot 0.3) + (2 \\cdot 0.4) + (3 \\cdot 0.1) \\]\n\\[ E = 0 + 0.3 + 0.8 + 0.3 = 1.4 \\]\n2. التكلفة المتوقعة للإصلاح:<br>\\[ \\text{Repair} = 1.4 \\cdot 1300 = 1820 \\$ \\]\n3. المقارنة والقرار:<br>\nتكلفة الصيانة (1400$) أرخص بكثير من تكلفة الإصلاح (1820$). لذلك نختار الصيانة الوقائية."
+            },
+            {
+                id: 113,
+                text: "Find the operating profit at production and selling 3,000 units, sells S=20$ per unit. The variable cost is V=10$ per unit and the fixed cost is F=20,000$, profit = ?",
+                textAr: "أوجد الربح التشغيلي لإنتاج وبيع 3,000 وحدة، علماً أن سعر البيع للوحدة 20$. التكلفة المتغيرة للوحدة 10$ والتكلفة الثابتة 20,000$. الربح يساوي:",
+                options: [
+                    "A- 7000$", 
+                    "B- 9,000$", 
+                    "C- 8,000$", 
+                    "D- 10,000$"
+                ],
+                optionsAr: [
+                    "أ- 7,000$", 
+                    "ب- 9,000$", 
+                    "ج- 8,000$", 
+                    "د- 10,000$"
+                ],
+                correctIndex: 3, type: "math", category: "BEP",
+                explanation: "الربح التشغيلي يُحسب بضرب الكمية المباعة في هامش الربح للوحدة (السعر ناقص المتغيرة)، ثم نطرح إجمالي المصاريف الثابتة من الناتج.",
+                givens: "Q = 3000 , S = 20\\$ , V = 10\\$ , FC = 20000\\$",
+                required: "الربح التشغيلي (Operating Profit)",
+                steps: "قانون الربح التشغيلي:<br>\\[ \\text{Profit} = Q \\cdot (S - V) - FC \\]\nنعوض الأرقام:<br>\\[ \\text{Profit} = 3000 \\cdot (20 - 10) - 20000 \\]\n\\[ \\text{Profit} = 3000 \\cdot (10) - 20000 \\]\n\\[ \\text{Profit} = 30000 - 20000 = 10000 \\$ \\]"
+            },
+            {
+                id: 114,
+                text: "Suppose that the demand for a product D=5,000 unit per year. The order cost is Co=100$ and the inventory holding cost Ch=18$ per item per year. If shortages cost Cs=60$ per item per year. Then EOQ (unit) ~?",
+                textAr: "الطلب على منتج 5000 وحدة سنوياً. تكلفة الطلب 100$. وتكلفة الاحتفاظ 18$ للعنصر سنوياً. إذا كانت تكلفة العجز المسموح به 60$ للعنصر سنوياً. فإن الكمية الاقتصادية EOQ تقريباً تساوي:",
+                options: [
+                    "A- 629 unit", 
+                    "B- 962 unit", 
+                    "C- 269 unit", 
+                    "D- 266 unit"
+                ],
+                optionsAr: [
+                    "أ- 629 وحدة", 
+                    "ب- 962 وحدة", 
+                    "ج- 269 وحدة", 
+                    "د- 266 وحدة"
+                ],
+                correctIndex: 2, type: "math", category: "EOQ",
+                explanation: "بما أن المسألة تحتوي على (عجز مسموح به - Shortages)، فإننا نطبق القانون الشامل للكمية الاقتصادية الذي يحتوي على جذرين مضروبين في بعضهما.",
+                givens: "D = 5000 , Co = 100\\$ , Ch = 18\\$ , Cs = 60\\$",
+                required: "الكمية الاقتصادية بوجود عجز (EOQ)",
+                steps: "قانون العجز:<br>\\[ Q = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\cdot \\sqrt{\\frac{C_h + C_s}{C_s}} \\]\nنعوض الأرقام:<br>\\[ Q = \\sqrt{\\frac{2 \\cdot 5000 \\cdot 100}{18}} \\cdot \\sqrt{\\frac{18 + 60}{60}} \\]\n\\[ Q = \\sqrt{55555.55} \\cdot \\sqrt{\\frac{78}{60}} \\]\n\\[ Q = 235.70 \\cdot \\sqrt{1.3} = 235.70 \\cdot 1.140 \\approx 268.7 \\approx 269 \\text{ units} \\]"
+            },
+            {
+                id: 115,
+                text: "The costs which do vary directly with the level of output or production, are called -----?",
+                textAr: "التكاليف التي تتغير بشكل مباشر مع مستوى المخرجات أو الإنتاج، تسمى -----؟",
+                options: [
+                    "A- Variable Costs", 
+                    "B- Semi-variable", 
+                    "C- Fixed Costs", 
+                    "D- None of the above"
+                ],
+                optionsAr: [
+                    "أ- التكاليف المتغيرة", 
+                    "ب- التكاليف شبه المتغيرة", 
+                    "ج- التكاليف الثابتة", 
+                    "د- لا شيء مما سبق"
+                ],
+                correctIndex: 0, type: "theory", category: "Theory",
+                explanation: "أي تكلفة ترتبط وتتغير (تزيد أو تنقص) بزيادة أو نقصان حجم الإنتاج (مثل المواد الخام وأجور العمال بالقطعة) تُعرف إدارياً بالتكاليف المتغيرة (Variable Costs)."
+            },
+            {
+                id: 116,
+                text: "For Min Z=2x1+5x2, And the points of feasible region bounded by the following points: P1(0,6), P2(0,8), P3(4,8) P4(6,6), P5(6,0) P6(4,0). Then the Minimum value of Z is at point:",
+                textAr: "لتقليل المعادلة Z=2x1+5x2، ونقاط منطقة الحل الممكنة هي: P1(0,6), P2(0,8), P3(4,8), P4(6,6), P5(6,0), P6(4,0). فإن القيمة الصغرى لـ Z تقع عند النقطة:",
+                options: [
+                    "A- P6", 
+                    "B- P2", 
+                    "C- P3", 
+                    "D- P1"
+                ],
+                optionsAr: [
+                    "أ- النقطة P6", 
+                    "ب- النقطة P2", 
+                    "ج- النقطة P3", 
+                    "د- النقطة P1"
+                ],
+                correctIndex: 0, type: "math", category: "LP",
+                explanation: "بما أن المطلوب هو القيمة الصغرى (Min)، نقوم بتعويض النقاط المذكورة في الخيارات داخل معادلة الهدف ونختار النقطة التي تنتج (أصغر) رقم ممكن.",
+                givens: "Z = 2x_1 + 5x_2",
+                required: "أصغر قيمة (Minimum Z)",
+                steps: "التعويض في الخيارات:<br>\\[ P6(4,0): Z = 2(4) + 5(0) = 8 \\leftarrow \\text{Min} \\]\n\\[ P2(0,8): Z = 2(0) + 5(8) = 40 \\]\n\\[ P3(4,8): Z = 2(4) + 5(8) = 8 + 40 = 48 \\]\n\\[ P1(0,6): Z = 2(0) + 5(6) = 30 \\]"
+            },
+            {
+                id: 117,
+                text: "For the following data: sells S=100 ID per unit. The variable cost is V=20 ID per unit and the breakeven point = 500,000 ID. Find the fixed cost is F=?",
+                textAr: "للبيانات التالية: سعر البيع للوحدة 100 دينار. التكلفة المتغيرة للوحدة 20 دينار، ونقطة التعادل (كقيمة مبيعات) تبلغ 500,000 دينار. أوجد التكلفة الثابتة F:",
+                options: [
+                    "A- 100,000 ID", 
+                    "B- 200,000 ID", 
+                    "C- 300,000 ID", 
+                    "D- 400,000 ID"
+                ],
+                optionsAr: [
+                    "أ- 100,000 دينار", 
+                    "ب- 200,000 دينار", 
+                    "ج- 300,000 دينار", 
+                    "د- 400,000 دينار"
+                ],
+                correctIndex: 3, type: "math", category: "BEP",
+                explanation: "نقوم بعملية عكسية: نستخرج كمية التعادل بالوحدات أولاً بقسمة قيمة المبيعات على السعر. ثم نضرب هذه الكمية في هامش الربح (سعر البيع - التكلفة المتغيرة) لإيجاد التكلفة الثابتة.",
+                givens: "S = 100 , V = 20 , BEP(sales) = 500,000",
+                required: "التكلفة الثابتة (Fixed Cost FC)",
+                steps: "1. كمية التعادل بالوحدات:<br>\\[ BEP_{units} = \\frac{BEP_{sales}}{S} = \\frac{500,000}{100} = 5000 \\text{ units} \\]\n2. قانون التكلفة الثابتة:<br>\\[ FC = BEP_{units} \\cdot (S - V) \\]\n\\[ FC = 5000 \\cdot (100 - 20) = 5000 \\cdot 80 = 400,000 \\text{ ID} \\]"
+            },
+            {
+                id: 118,
+                text: "For Min Z=5x1+10x2, And the points of feasible region bounded by the following points: P1(0,6), P2(0,10), P3(6,0), P4(4,0), P5(6,10) Then the Minimum value of Z is at point:",
+                textAr: "لتقليل المعادلة Z=5x1+10x2، ونقاط منطقة الحل الممكنة هي: P1(0,6), P2(0,10), P3(6,0), P4(4,0), P5(6,10). فإن القيمة الصغرى لـ Z تقع عند النقطة:",
+                options: [
+                    "A- P2", 
+                    "B- P1", 
+                    "C- P4", 
+                    "D- P5"
+                ],
+                optionsAr: [
+                    "أ- النقطة P2", 
+                    "ب- النقطة P1", 
+                    "ج- النقطة P4", 
+                    "د- النقطة P5"
+                ],
+                correctIndex: 2, type: "math", category: "LP",
+                explanation: "مسألة تعويض مباشر للبحث عن (أصغر) رقم لأن المطلوب تقليل (Min).",
+                givens: "Z = 5x_1 + 10x_2",
+                required: "أصغر قيمة (Minimum Z)",
+                steps: "التعويض في الخيارات:<br>\\[ P2(0,10): Z = 5(0) + 10(10) = 100 \\]\n\\[ P1(0,6): Z = 5(0) + 10(6) = 60 \\]\n\\[ P4(4,0): Z = 5(4) + 10(0) = 20 \\leftarrow \\text{Min} \\]\n\\[ P5(6,10): Z = 5(6) + 10(10) = 30 + 100 = 130 \\]"
+            },
+            {
+                id: 119,
+                text: "Suppose that the demand for a product is D=1000 unit per year, order cost is Co=60$ and the inventory holding cost is Ch=12$ per item per year. Assuming shortages are not allowed. The annual cost is:",
+                textAr: "الطلب على منتج 1000 وحدة سنوياً، تكلفة الطلب 60$ وتكلفة الاحتفاظ 12$ للعنصر سنوياً. بافتراض عدم السماح بالعجز. التكلفة السنوية الكلية تساوي:",
+                options: [
+                    "A- 1400$", 
+                    "B- 1500$", 
+                    "C- 1200$", 
+                    "D- 1250$"
+                ],
+                optionsAr: [
+                    "أ- 1400$", 
+                    "ب- 1500$", 
+                    "ج- 1200$", 
+                    "د- 1250$"
+                ],
+                correctIndex: 2, type: "math", category: "EOQ",
+                explanation: "لإيجاد التكلفة الإجمالية في حالة (عدم وجود عجز)، نستخدم القانون الذي يضع جميع المعطيات (الطلب، تكلفة الطلب، وتكلفة الاحتفاظ) مضروبة في 2 تحت الجذر التربيعي.",
+                givens: "D = 1000 , C_o = 60\\$ , C_h = 12\\$",
+                required: "التكلفة السنوية الكلية (Total Cost TC)",
+                steps: "قانون التكلفة الكلية:<br>\\[ TC = \\sqrt{2 \\cdot D \\cdot C_o \\cdot C_h} \\]\nنعوض الأرقام:<br>\\[ TC = \\sqrt{2 \\cdot 1000 \\cdot 60 \\cdot 12} \\]\n\\[ TC = \\sqrt{1,440,000} = 1200 \\$ \\]"
+            },
+            {
+                id: 120,
+                text: "Company wants to purchase a machine A or B to produce items. The USP = 12$/item Machine A: UVC=4$/unit Annual cost =6000$. Machine B: UVC= 2$/unit, Annual cost =10000$.",
+                textAr: "شركة تقارن بين آلتين. سعر البيع 12$. الآلة A: تكلفة متغيرة 4$ وتكلفة ثابتة 6000$. الآلة B: تكلفة متغيرة 2$ وتكلفة ثابتة 10000$. إذن:",
+                options: [
+                    "A- Machine A produce low units than Machine B", 
+                    "B- Machine B produce low units than Machine A", 
+                    "C- Machine A produce equal units of Machine B", 
+                    "D- None of these above answers"
+                ],
+                optionsAr: [
+                    "أ- الآلة A مخصصة لإنتاج وحدات أقل من الآلة B", 
+                    "ب- الآلة B مخصصة لإنتاج وحدات أقل من الآلة A", 
+                    "ج- الآلة A تنتج وحدات مساوية للآلة B", 
+                    "د- لا شيء مما سبق"
+                ],
+                correctIndex: 0, type: "math", category: "Machine",
+                explanation: "نفس القاعدة السابقة: الآلة ذات التكلفة الثابتة (السنوية) الأقل، تكون دائماً هي الأفضل والمخصصة للإنتاج المنخفض.",
+                givens: "Machine A (FC=6000$) , Machine B (FC=10000$)",
+                required: "الآلة الأفضل للإنتاج المنخفض",
+                steps: "بمقارنة التكاليف الثابتة:<br>\\[ \\text{Machine A Fixed Cost} = 6000 \\$ \\]\n\\[ \\text{Machine B Fixed Cost} = 10000 \\$ \\]\nالآلة A تكلفتها أقل، إذن نختارها لإنتاج كميات أقل (Low units)."
+            },
+            {
+                id: 121,
+                text: "IF Cs=20$, Ch=10, and Q=750 units, the value of Imax is:",
+                textAr: "إذا كانت تكلفة العجز 20$، وتكلفة الاحتفاظ 10$، والكمية الاقتصادية 750 وحدة، فإن قيمة الحد الأقصى للمخزون (Imax) تساوي:",
+                options: [
+                    "A- 200", 
+                    "B- 500", 
+                    "C- 400", 
+                    "D- 250"
+                ],
+                optionsAr: [
+                    "أ- 200", 
+                    "ب- 500", 
+                    "ج- 400", 
+                    "د- 250"
+                ],
+                correctIndex: 1, type: "math", category: "EOQ",
+                explanation: "الحد الأقصى للمخزون هو الجزء المتبقي من الكمية الكلية بعد سد العجز. ويُحسب رياضياً بضرب الكمية (Q) في نسبة تكلفة العجز إلى مجموع التكلفتين.",
+                givens: "Q = 750 , C_s = 20 , C_h = 10",
+                required: "الحد الأقصى للمخزون (Imax)",
+                steps: "قانون الحد الأقصى:<br>\\[ I_{max} = Q \\cdot \\left( \\frac{C_s}{C_h + C_s} \\right) \\]\nنعوض الأرقام:<br>\\[ I_{max} = 750 \\cdot \\left( \\frac{20}{10 + 20} \\right) \\]\n\\[ I_{max} = 750 \\cdot \\left( \\frac{20}{30} \\right) = 500 \\text{ units} \\]"
+            },
+            {
+                id: 122,
+                text: "IF Q=450 units, Imax=150, then the value of Shortage allowable Quantity (S) is:",
+                textAr: "إذا كانت الكمية الكلية 450 وحدة، والحد الأقصى للمخزون 150 وحدة، فإن قيمة كمية العجز المسموح بها (S) تساوي:",
+                options: [
+                    "A- 400", 
+                    "B- 200", 
+                    "C- 300", 
+                    "D- 100"
+                ],
+                optionsAr: [
+                    "أ- 400", 
+                    "ب- 200", 
+                    "ج- 300", 
+                    "د- 100"
+                ],
+                correctIndex: 2, type: "math", category: "EOQ",
+                explanation: "كمية الطلب الكلية (Q) تنقسم إلى قسمين: قسم يدخل المخزن (Imax) وقسم يذهب لسد العجز (S). لإيجاد العجز، نطرح المخزون من الكمية الكلية.",
+                givens: "Q = 450 , I_{max} = 150",
+                required: "كمية العجز (Shortage S)",
+                steps: "قانون استخراج العجز:<br>\\[ S = Q - I_{max} \\]\nنعوض الأرقام:<br>\\[ S = 450 - 150 = 300 \\text{ units} \\]"
+            },
+            {
+                id: 123,
+                text: "The demand for product D=15000 unit per year, the Economic Order Quantity Q=6000 unit, the Number of ordering = ?",
+                textAr: "الطلب على منتج 15000 وحدة سنوياً، والكمية الاقتصادية للطلب 6000 وحدة، فإن عدد الطلبيات (تكرار الطلب) يساوي:",
+                options: [
+                    "A- 3 order", 
+                    "B- 4 order", 
+                    "C- 2 order", 
+                    "D- 5 order"
+                ],
+                optionsAr: [
+                    "أ- 3 طلبيات", 
+                    "ب- 4 طلبيات", 
+                    "ج- 2 طلبيات", 
+                    "د- 5 طلبيات"
+                ],
+                correctIndex: 0, type: "math", category: "EOQ",
+                explanation: "قسمة الطلب السنوي على كمية الطلب تعطي 2.5، والتقريب الصحيح والأقرب في الخيارات هو 3 طلبيات.",
+                givens: "D = 15000 , Q = 6000",
+                required: "عدد الطلبيات (N)",
+                steps: "قانون تكرار الطلب:<br>\\[ N = \\frac{D}{Q} \\]\nنعوض الأرقام:<br>\\[ N = \\frac{15000}{6000} = 2.5 \\approx 3 \\text{ orders} \\]"
+            },
+            {
+                id: 124,
+                text: "For the following data: Fixed cost =2,000 ID, Variable cost per unit =80 ID, Selling price per unit =100 ID. Then the number of unit at BEP is:",
+                textAr: "للبيانات التالية: التكلفة الثابتة 2,000 دينار، التكلفة المتغيرة للوحدة 80 دينار، وسعر بيع الوحدة 100 دينار. عدد وحدات نقطة التعادل يساوي:",
+                options: [
+                    "A- 80 units", 
+                    "B- 90 units", 
+                    "C- 100 units", 
+                    "D- 110 units"
+                ],
+                optionsAr: [
+                    "أ- 80 وحدة", 
+                    "ب- 90 وحدة", 
+                    "ج- 100 وحدة", 
+                    "د- 110 وحدة"
+                ],
+                correctIndex: 2, type: "math", category: "BEP",
+                explanation: "لإيجاد نقطة التعادل بالوحدات، نقسم التكاليف الثابتة على هامش الربح للوحدة الواحدة (سعر البيع مطروحاً منه التكلفة المتغيرة).",
+                givens: "FC = 2000 , V = 80 , S = 100",
+                required: "وحدات التعادل (BEP Units)",
+                steps: "قانون التعادل:<br>\\[ BEP = \\frac{FC}{S - V} \\]\nنعوض الأرقام:<br>\\[ BEP = \\frac{2000}{100 - 80} = \\frac{2000}{20} = 100 \\text{ units} \\]"
+            },
+            {
+                id: 125,
+                text: "If D=6000 units per year and the Economic Order Quantity EOQ (unit) is 444 units, the Time between orders is:",
+                textAr: "إذا كان الطلب 6000 وحدة سنوياً، والكمية الاقتصادية (EOQ) تبلغ 444 وحدة، فإن الوقت الفاصل بين الطلبيات بالسنوات يساوي:",
+                options: [
+                    "A- 0.033 year", 
+                    "B- 0.074 year", 
+                    "C- 0.055 year", 
+                    "D- 0.066 year"
+                ],
+                optionsAr: [
+                    "أ- 0.033 سنة", 
+                    "ب- 0.074 سنة", 
+                    "ج- 0.055 سنة", 
+                    "د- 0.066 سنة"
+                ],
+                correctIndex: 1, type: "math", category: "EOQ",
+                explanation: "الوقت الفاصل بين الطلبيات (T) يُحسب دائماً بقسمة الكمية المطلوبة (Q) على إجمالي الطلب السنوي (D).",
+                givens: "D = 6000 , Q = 444",
+                required: "الوقت الفاصل (Time T)",
+                steps: "قانون الوقت الفاصل:<br>\\[ T = \\frac{Q}{D} \\]\nنعوض الأرقام:<br>\\[ T = \\frac{444}{6000} = 0.074 \\text{ year} \\]"
+            }
+
+
+
+        ];
+
+        let currentViewData = [];
+        let isTestMode = false;
+        let scoreCorrect = 0;
+        let scoreAnswered = 0;
+
+        function updateScoreBoard() {
+            document.getElementById('correct-score').innerText = scoreCorrect;
+            document.getElementById('answered-score').innerText = scoreAnswered;
+        }
+
+        function goHome() {
+            document.getElementById('quiz-view').style.display = 'none';
+            document.getElementById('home-view').style.display = 'block';
+        }
+
+        function finishTest() {
+            if(scoreAnswered === 0) {
+                alert("لم تقم بالإجابة على أي سؤال بعد!");
+                return;
+            }
+            let percentage = Math.round((scoreCorrect / scoreAnswered) * 100);
+            let msg = `إحصائيات الاختبار:\n\n` +
+                      `عدد الأسئلة المجاب عليها: ${scoreAnswered}\n` +
+                      `الإجابات الصحيحة: ${scoreCorrect}\n` +
+                      `النسبة المئوية: ${percentage}%\n\n`;
+            
+            if(percentage >= 90) msg += "ممتاز جداً! أنت مستعد للامتحان 🥇";
+            else if(percentage >= 70) msg += "جيد جداً! راجع أخطائك لتصبح أفضل 🥈";
+            else msg += "تحتاج إلى المزيد من التركيز والمراجعة 📚";
+
+            alert(msg);
+        }
+
+        let mainMathData = []; 
+
+        function loadSection(mode, param) {
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('quiz-view').style.display = 'block';
+
+            isTestMode = mode.startsWith('test');
+            
+            document.getElementById('score-tracker').style.display = isTestMode ? 'block' : 'none';
+            document.getElementById('btn-finish-test').style.display = isTestMode ? 'block' : 'none';
+            
+            if(mode === 'bank-math') {
+                document.getElementById('math-filters').style.display = 'flex';
+            } else {
+                document.getElementById('math-filters').style.display = 'none';
+            }
+            
+            scoreCorrect = 0; scoreAnswered = 0; updateScoreBoard();
+            let filteredData = [...questionsData];
+
+            if (mode === 'test') {
+                filteredData = filteredData.sort(() => 0.5 - Math.random()).slice(0, param);
+            } else if (mode === 'test-theory') {
+                filteredData = filteredData.filter(q => q.type === 'theory').sort(() => 0.5 - Math.random());
+            } else if (mode === 'bank-math') {
+                filteredData = filteredData.filter(q => q.type === 'math');
+                mainMathData = [...filteredData]; 
+            }
+
+            currentViewData = filteredData;
+            renderQuestions(mode);
+            window.scrollTo(0, 0);
+            
+            if(mode === 'bank-math') {
+                document.querySelectorAll('.math-filter-btn').forEach(b => b.classList.remove('active-filter'));
+                document.querySelector('.math-filter-btn').classList.add('active-filter');
+            }
+        }
+
+        function filterMathCategory(cat) {
+            document.querySelectorAll('.math-filter-btn').forEach(btn => btn.classList.remove('active-filter'));
+            event.target.classList.add('active-filter');
+
+            if(cat === 'All') {
+                currentViewData = [...mainMathData];
+            } else {
+                currentViewData = mainMathData.filter(q => q.category === cat);
+            }
+            renderQuestions('bank-math');
+        }
+
+        function startCustomRandom() {
+            let num = document.getElementById('random-num').value;
+            if(!num || num < 1) return alert('يرجى إدخال رقم صحيح');
+            loadSection('test', parseInt(num));
+        }
+
+        function startCustomRange() {
+            let start = parseInt(document.getElementById('range-start').value);
+            let end = parseInt(document.getElementById('range-end').value);
+            if(!start || !end || start > end) return alert('يرجى إدخال نطاق صحيح');
+            
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('quiz-view').style.display = 'block';
+            document.getElementById('math-filters').style.display = 'none';
+            isTestMode = true;
+            document.getElementById('score-tracker').style.display = 'block';
+            document.getElementById('btn-finish-test').style.display = 'block';
+            
+            scoreCorrect = 0; scoreAnswered = 0; updateScoreBoard();
+            currentViewData = questionsData.filter(q => q.id >= start && q.id <= end);
+            renderQuestions('test');
+            window.scrollTo(0, 0);
+        }
+
+        function renderQuestions(mode) {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            if(currentViewData.length === 0) {
+                container.innerHTML = '<h3 style="text-align:center; padding: 20px;">لا توجد أسئلة في هذا النطاق حالياً.</h3>';
+                return;
+            }
+
+            if(mode === 'bank-math' || isTestMode === true) {
+                currentViewData.sort((a, b) => a.id - b.id);
+            }
+
+            currentViewData.forEach(q => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                card.id = `q-card-${q.id}`;
+
+                let optionsHTML = '';
+                q.options.forEach((opt, optIdx) => {
+                    let extraClass = (!isTestMode && optIdx === q.correctIndex) ? 'correct disabled' : '';
+                    let clickEvent = isTestMode ? `onclick="handleAnswer(${q.id}, ${optIdx}, ${q.correctIndex})"` : 'class="disabled"';
+                    optionsHTML += `<li class="option-item ${extraClass}" id="opt-${q.id}-${optIdx}" ${clickEvent}>${opt}</li>`;
+                });
+
+                let disableLogic = isTestMode ? 'disabled' : '';
+                let solveBtn = q.type === 'math' ? `<button class="action-btn btn-solve" id="btn-solve-${q.id}" onclick="toggleSolution(${q.id})" ${disableLogic}>📝 إظهار الحل</button>` : '';
+
+                card.innerHTML = `
+                    <div class="q-text-container" id="q-container-${q.id}">
+                        <div id="q-text-${q.id}">Q${q.id}: ${q.text}</div>
+                    </div>
+                    <ul class="options-list" id="options-list-${q.id}">
+                        ${optionsHTML}
+                    </ul>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-translate" id="btn-trans-${q.id}">🌐 ترجمة (اضغط باستمرار)</button>
+                        <button class="action-btn btn-explain" id="btn-explain-${q.id}" onclick="openExplainModal(${q.id})" ${disableLogic}>💡 الشرح</button>
+                        ${solveBtn}
+                    </div>
+                    
+                    <div class="solution-box" id="sol-box-${q.id}">
+                        <div class="sol-title">المعطيات والمطلوب</div>
+                        <div class="sol-content-ar"><b>المعطيات:</b> <span dir="ltr">${q.givens || ''}</span><br><b>المطلوب:</b> ${q.required || ''}</div>
+                        <div class="sol-title">خطوات الحل</div>
+                        <div class="sol-content">${q.steps || ''}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+
+                setupTranslationEvents(q);
+            });
+
+            if(window.MathJax) MathJax.typesetPromise();
+        }
+
+        // نافذة الشرح المنبثقة
+                function openExplainModal(id) {
+            const q = currentViewData.find(x => x.id === id);
+            // إعادة عنوان النافذة ليكون "شرح"
+            document.querySelector('#explain-modal .modal-header').innerHTML = '💡 شرح السؤال';
+            document.getElementById('modal-text').innerHTML = q.explanation;
+            document.getElementById('explain-modal').style.display = 'flex';
+        }
+
+
+        function closeModal() {
+            document.getElementById('explain-modal').style.display = 'none';
+        }
+
+        function setupTranslationEvents(q) {
+            const btn = document.getElementById(`btn-trans-${q.id}`);
+            btn.innerHTML = '🌐 الترجمة'; // تغيير اسم الزر لإزالة كلمة "اضغط باستمرار"
+            
+            btn.onclick = (e) => {
+                if (e.cancelable) e.preventDefault();
+                
+                const modalHeader = document.querySelector('#explain-modal .modal-header');
+                const modalText = document.getElementById('modal-text');
+                
+                // تغيير عنوان النافذة ليكون "ترجمة"
+                modalHeader.innerHTML = '🌐 ترجمة السؤال والخيارات';
+                
+                // تجميع السؤال المترجم مع الخيارات المترجمة بتنسيق أنيق
+                let transHtml = `<strong>السؤال:</strong><br>${q.textAr}<br><br><strong>الخيارات:</strong><br><ul style="list-style:none; padding:0;">`;
+                q.optionsAr.forEach(opt => {
+                    transHtml += `<li style="margin-bottom:8px; padding:10px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">${opt}</li>`;
+                });
+                transHtml += `</ul>`;
+                
+                // عرض الترجمة في النافذة
+                modalText.innerHTML = transHtml;
+                document.getElementById('explain-modal').style.display = 'flex';
+            };
+        }
+
+        function toggleSolution(id) {
+            const solBox = document.getElementById(`sol-box-${id}`);
+            const btn = document.getElementById(`btn-solve-${id}`);
+            const q = currentViewData.find(x => x.id === id);
+            const options = document.querySelectorAll(`#options-list-${id} .option-item`);
+
+            if (solBox.style.display === 'block') {
+                solBox.style.display = 'none';
+                btn.innerHTML = '📝 إظهار الحل';
+                btn.style.backgroundColor = 'var(--success)';
+            } else {
+                solBox.style.display = 'block';
+                btn.innerHTML = '🙈 إخفاء الحل';
+                btn.style.backgroundColor = '#6b7280'; 
+                
+                options.forEach((opt, idx) => {
+                    if(idx !== q.correctIndex) opt.classList.add('hidden');
+                });
+
+                if(window.MathJax) MathJax.typesetPromise();
+            }
+        }
+
+        function handleAnswer(qId, selectedIdx, correctIdx) {
+            const card = document.getElementById(`q-card-${qId}`);
+            const options = card.querySelectorAll('.option-item');
+            
+            if(options[0].classList.contains('disabled')) return;
+
+            scoreAnswered++;
+            let isCorrect = (selectedIdx === correctIdx);
+            if(isCorrect) scoreCorrect++;
+            updateScoreBoard();
+
+            options.forEach((opt, idx) => {
+                opt.classList.add('disabled');
+                if (idx === correctIdx) {
+                    opt.classList.add('correct');
+                } else if (idx === selectedIdx && !isCorrect) {
+                    opt.classList.add('incorrect');
+                }
+            });
+
+            document.getElementById(`btn-explain-${qId}`).disabled = false;
+            let solveBtn = document.getElementById(`btn-solve-${qId}`);
+            if(solveBtn) solveBtn.disabled = false;
+        }
+        
+                // --- كود إظهار عدد الأسئلة داخل أزرار الأصناف ---
+        function showCategoryCounts() {
+            const mathQs = questionsData.filter(q => q.type === 'math');
+            const counts = {
+                'All': mathQs.length,
+                'BEP': mathQs.filter(q => q.category === 'BEP').length,
+                'EOQ': mathQs.filter(q => q.category === 'EOQ').length,
+                'LP': mathQs.filter(q => q.category === 'LP').length,
+                'Maintenance': mathQs.filter(q => q.category === 'Maintenance').length,
+                'Machine': mathQs.filter(q => q.category === 'Machine').length
+            };
+
+            document.querySelectorAll('.math-filter-btn').forEach(btn => {
+                const match = btn.getAttribute('onclick').match(/'([^']+)'/);
+                if (match) {
+                    const cat = match[1];
+                    if (counts[cat] !== undefined) {
+                        btn.innerHTML += ` <span style="background:#fffff; 
+                        color: white; padding:0px 12px; border-radius:10px; font-size:0.70rem; margin-right:0px; font-weight:bold;">${counts[cat]}</span>`;
+                    }
+                }
+            });
+        }
+        // تشغيل العداد فور فتح التطبيق
+        showCategoryCounts();
+
+    </script>
+</body>
+</html>
