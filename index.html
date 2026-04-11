@@ -5,213 +5,267 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إدارة المشاريع | امتحان مشترك</title>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <style>
         :root {
-            --primary: #1e3a8a;
-            --secondary: #3b82f6;
-            --accent: #f59e0b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --light: #f3f4f6;
-            --dark: #1f2937;
-            --bg: #e5e7eb;
+            --primary: #1e3a8a; 
+            --primary-light: #3b82f6; 
+            --secondary: #2563eb;
+            --accent: #f59e0b; 
+            --success: #059669; 
+            --danger: #dc2626; 
+            --light: #ffffff;
+            --dark: #1e293b;
+            --text-muted: #64748b;
+            --bg-color: #f8fafc; 
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; margin: 0; padding: 0; -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
-        body { background-color: var(--bg); color: var(--dark); line-height: 1.6; padding-bottom: 30px; }
+        html { scroll-padding-top: 90px; }
 
-        header { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 2rem 1rem; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-bottom-left-radius: 20px; border-bottom-right-radius: 20px; margin-bottom: 25px; }
-        header h1 { font-size: 2.5rem; margin-bottom: 5px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        header h3 { font-size: 1.3rem; font-weight: normal; opacity: 0.9; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--dark); line-height: 1.7; padding-bottom: 40px; font-size: 16px; }
 
-        .container { display: flex; flex-direction: column; padding: 0 15px; max-width: 900px; margin: 0 auto; gap: 15px; }
+        header { 
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white; padding: 3rem 1rem; text-align: center; 
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.15); 
+            border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; margin-bottom: 35px; 
+            position: relative; overflow: hidden;
+        }
+        header::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%); pointer-events: none;
+        }
+        header h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin-bottom: 8px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        header h3 { font-size: clamp(1.1rem, 3vw, 1.4rem); font-weight: 500; opacity: 0.9; color: #e0f2fe; }
 
-        /* Home View Styles */
-        #home-view { display: block; }
-        .controls-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 20px; }
-        @media(min-width: 600px) { .controls-grid { grid-template-columns: 1fr 1fr; } }
+        .container { display: flex; flex-direction: column; padding: 0 20px; max-width: 900px; margin: 0 auto; gap: 20px; }
+
+        #home-view { display: block; animation: fadeIn 0.5s ease-out; }
         
-        .btn-main { padding: 18px; background: white; border: 2px solid var(--secondary); border-radius: 12px; color: var(--secondary); font-weight: bold; cursor: pointer; text-align: center; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: 0.3s; }
-        .btn-main:hover, .btn-main:active { background: var(--secondary); color: white; transform: translateY(-3px); }
+        .controls-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 25px; }
+        @media(min-width: 650px) { .controls-grid { grid-template-columns: repeat(2, 1fr); } }
         
-        .custom-test-box { background: white; padding: 20px; border-radius: 12px; border: 1px solid #d1d5db; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .custom-test-box label { font-weight: bold; display: block; margin-bottom: 10px; color: var(--primary); }
-        .custom-test-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #9ca3af; border-radius: 8px; font-size: 1rem; text-align: center; }
-        .custom-test-box button { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1.1rem; }
+        .btn-main { 
+            padding: 20px; background: white; border: 2px solid transparent; border-radius: 16px; 
+            color: var(--primary); font-weight: 700; cursor: pointer; text-align: right; 
+            font-size: 1.15rem; box-shadow: var(--card-shadow); transition: var(--transition); 
+            display: flex; align-items: center; justify-content: flex-start; gap: 15px;
+        }
+        .btn-main i { font-size: 1.4rem; color: var(--primary-light); transition: var(--transition); width: 30px; text-align: center; }
+        .btn-main:hover, .btn-main:active { 
+            background: var(--primary-light); color: white; transform: translateY(-4px); 
+            box-shadow: 0 15px 30px rgba(37, 99, 235, 0.2); border-color: var(--primary-light);
+        }
+        .btn-main:hover i { color: white; }
+        
+        .custom-test-box { background: white; padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px; box-shadow: var(--card-shadow); transition: var(--transition); }
+        .custom-test-box:hover { border-color: #cbd5e1; }
+        .custom-test-box label { font-weight: 700; margin-bottom: 12px; color: var(--primary); font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .custom-test-box input { width: 100%; padding: 14px 18px; margin-bottom: 15px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem; text-align: center; transition: var(--transition); background-color: #f8fafc; color: var(--dark); }
+        .custom-test-box input:focus { outline: none; border-color: var(--secondary); background-color: white; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+        .custom-test-box button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1.1rem; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .custom-test-box button:hover { background: var(--primary-light); box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25); }
 
-        /* Quiz View Styles */
-        #quiz-view { display: none; }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; position: sticky; top: 10px; z-index: 100; gap:     10px; }
-        .btn-back { background: var(--dark); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 1rem; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.2); cursor: pointer; }
-        .btn-finish { background: var(--danger); color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 1rem; flex: 1; box-shadow: 0 4px 6px rgba(0,0,0,0.2); cursor: pointer; }
+        #quiz-view { display: none; animation: fadeIn 0.5s ease-out; }
         
-        .math-filters-container { display: none; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 15px; padding: 10px; background: white; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; }
-              .math-filter-btn { 
-            padding: 8px 12px; 
-            border: 1px solid var(--secondary); 
-            background: white; 
-            color: var(--secondary); 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            font-size: 0.95rem; 
-            flex: 1; 
-            min-width: 100px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
-            transition: 0.2s; 
+        .sticky-test-nav {
+            position: sticky; top: 10px; z-index: 100; background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px); border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.8); display: flex; justify-content: space-between;
+            align-items: center; padding: 8px 12px; margin-bottom: 25px; transition: var(--transition);
         }
-           .math-filter-btn { 
-            padding: 10px 5px; 
-            border: 1px solid var(--secondary); 
-            background: white; 
-            color: var(--secondary); 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            font-size: 0.95rem; 
-            flex: 1; 
-            min-width: 100px; 
-            text-align: center; /* لإبقاء النص في الوسط كما كان قديماً */
-            transition: 0.4s; 
-            position: relative; /* ضروري لضبط مكان الإشعار */
+        .mini-btn {
+            border: none; padding: 10px 16px; border-radius: 12px; font-weight: 700; 
+            font-size: 1rem; cursor: pointer; transition: var(--transition); 
+            display: flex; align-items: center; gap: 8px;
         }
-        .math-filter-btn.active-filter { 
-            background: var(--secondary); 
-            color: white; 
+        .mini-back { background: #f1f5f9; color: var(--dark); border: 1px solid #e2e8f0; }
+        .mini-back:hover { background: #e2e8f0; }
+        .mini-finish { background: var(--danger); color: white; box-shadow: 0 4px 10px rgba(220, 38, 38, 0.2); }
+        .mini-finish:hover { background: #b91c1c; transform: translateY(-2px); box-shadow: 0 6px 15px rgba(220, 38, 38, 0.3); }
+        
+        .mini-score { font-weight: 800; font-size: 1.1rem; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .score-numbers {
+            background: #f8fafc; padding: 4px 15px; border-radius: 20px; 
+            border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 6px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
-        .cat-badge {
-            position: absolute;
-            top: -6px; /* رفعه للأعلى قليلاً */
-            right: -6px; /* وضعه في الزاوية اليمنى */
-            background-color: var(--primary); /* لون أزرق داكن احترافي */
-            color: white;
-            font-size: 0.7rem; /* حجم خط صغير جداً */
-            padding: 2px 5px;
-            border-radius: 6px;
-            border: 1px solid white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-            line-height: 1.2;
-            font-weight: bold;
-        }
-        .math-filter-btn.active-filter .cat-badge {
-            background-color: white;
-            color: var(--primary);
-        }
- }
+        .score-number { color: var(--success); font-size: 1.25rem; display: inline-block; }
+        .divider { color: var(--text-muted); font-weight: normal; }
 
-        /* Questions */
-        .question-card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); border-top: 4px solid var(--secondary); }
-        .q-text-container { padding: 15px; border-radius: 10px; background: #f8fafc; border: 1px solid #e2e8f0; margin-bottom: 15px; font-size: 1.15rem; font-weight: bold; direction: ltr; text-align: left; transition: 0.3s; min-height: 80px; display: flex; align-items: center; }
-        .q-text-container.highlight-trans { background: #e0e7ff; border-color: var(--secondary); direction: rtl; text-align: right; }
-        
-        .options-list { list-style: none; direction: ltr; margin-bottom: 15px; }
-        .option-item { padding: 14px 15px; margin-bottom: 10px; background: var(--light); border: 2px solid #d1d5db; border-radius: 8px; font-size: 1.1rem; text-align: left; transition: 0.2s; cursor: pointer; }
-        .option-item.correct { background: var(--success) !important; color: white; border-color: var(--success); }
-        .option-item.incorrect { background: var(--danger) !important; color: white; border-color: var(--danger); }
+        @keyframes pulseScore {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); text-shadow: 0 0 10px var(--success); }
+            100% { transform: scale(1); }
+        }
+        .score-bump { animation: pulseScore 0.4s ease-out; }
+
+        .math-filters-container { display: none; flex-wrap: wrap; gap: 12px; margin-bottom: 25px; padding: 15px; background: white; border-radius: 16px; box-shadow: var(--card-shadow); border: 1px solid #e2e8f0; }
+        .math-filter-btn { padding: 10px 14px; border: 1px solid #cbd5e1; background: #f8fafc; color: var(--text-muted); border-radius: 12px; cursor: pointer; font-size: 0.95rem; flex: 1; min-width: 140px; transition: var(--transition); display: flex; align-items: center; justify-content: flex-start; gap: 12px; }
+        .math-filter-btn:hover { background: #e2e8f0; color: var(--dark); }
+        .math-filter-btn.active-filter { background: var(--primary-light); color: white; border-color: var(--primary-light); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+        .q-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--primary); color: white; min-width: 32px; height: 32px; padding: 0 8px; border-radius: 8px; font-size: 0.85rem; font-weight: 800; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+        .math-filter-btn.active-filter .q-badge { background: white; color: var(--primary-light); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+        .btn-txt { flex-grow: 1; text-align: right; font-weight: 700; }
+
+        .question-card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 30px; box-shadow: var(--card-shadow); border: 1px solid #f1f5f9; border-right: 5px solid var(--primary-light); transition: var(--transition); }
+        .question-card:hover { box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.08); transform: translateY(-2px); }
+        .q-text-container { padding: 20px; border-radius: 12px; background: #f8fafc; border: 1px solid #e2e8f0; margin-bottom: 20px; font-size: 1.2rem; font-weight: 700; direction: ltr; text-align: left; color: var(--dark); display: flex; align-items: center; }
+        .options-list { list-style: none; direction: ltr; margin-bottom: 20px; }
+        .option-item { padding: 16px 20px; margin-bottom: 12px; background: #ffffff; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1.1rem; font-weight: 500; text-align: left; transition: var(--transition); cursor: pointer; color: #334155; position: relative; overflow: hidden; }
+        .option-item:hover:not(.disabled) { border-color: var(--primary-light); background: #eff6ff; transform: translateX(-4px); }
+        .option-item.correct { background: var(--success) !important; color: white; border-color: var(--success); box-shadow: 0 4px 15px rgba(5, 150, 105, 0.2); }
+        .option-item.incorrect { background: var(--danger) !important; color: white; border-color: var(--danger); box-shadow: 0 4px 15px rgba(220, 38, 38, 0.2); }
         .option-item.hidden { display: none !important; }
         .option-item.disabled { cursor: not-allowed; opacity: 0.9; }
 
-        /* Action Buttons */
-        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; border-top: 1px solid #e5e7eb; padding-top: 15px; }
-        .action-btn { flex: 1; min-width: 110px; padding: 12px 5px; border: none; border-radius: 8px; font-weight: bold; color: white; font-size: 0.95rem; transition: 0.2s; text-align: center; }
-        .action-btn:disabled { background: #9ca3af !important; opacity: 0.7; cursor: not-allowed; }
-        .btn-translate { background: #8b5cf6; }
-        .btn-explain { background: var(--accent); }
-        .btn-solve { background: var(--success); }
+        .action-buttons { display: flex; gap: 12px; flex-wrap: wrap; border-top: 2px dashed #e2e8f0; padding-top: 20px; }
+        .action-btn { flex: 1; min-width: 120px; padding: 12px 10px; border: none; border-radius: 10px; font-weight: 700; color: white; font-size: 1rem; transition: var(--transition); text-align: center; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .action-btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.1); }
+        .action-btn:disabled { background: #cbd5e1 !important; color: #64748b; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-translate { background: #8b5cf6; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25); }
+        .btn-explain { background: var(--accent); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); }
+        .btn-solve { background: var(--success); box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25); }
 
-        /* Solution Area (Fixed RTL alignment) */
-        .solution-box { display: none; margin-top: 15px; padding: 15px; background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 10px; }
-        .sol-title { color: var(--primary); font-weight: bold; border-bottom: 2px solid #93c5fd; padding-bottom: 5px; margin-bottom: 10px; font-size: 1.1rem; }
-        .sol-content-ar { direction: rtl; text-align: right; font-size: 1rem; color: #374151; margin-bottom: 15px;}
-        .sol-content { direction: rtl; text-align: right; font-size: 1.1rem; overflow-x: auto; padding: 5px; } /* تعديل لجعل النصوص العربية صحيحة */
+        .solution-box { display: none; margin-top: 20px; padding: 20px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; animation: slideDown 0.3s ease-out; }
+        .sol-title { color: var(--success); font-weight: 800; border-bottom: 2px solid #dcfce7; padding-bottom: 8px; margin-bottom: 12px; font-size: 1.15rem; display: flex; align-items: center; gap: 8px; }
+        .sol-content-ar { direction: rtl; text-align: right; font-size: clamp(0.95rem, 3vw, 1.05rem); color: #334155; margin-bottom: 20px; line-height: 2;}
+        .sol-content { direction: rtl; text-align: right; font-size: clamp(0.9rem, 3vw, 1.05rem); line-height: 2; overflow-x: auto; padding: 15px; background: white; border-radius: 10px; border: 1px solid #e2e8f0; word-wrap: break-word; } 
+        .sol-content::-webkit-scrollbar { height: 6px; }
+        .sol-content::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .sol-content::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         
-        /* Modal (نافذة الشرح المنبثقة) */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 1000; justify-content: center; align-items: center; padding: 15px; }
-        .modal-content { background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position: relative; animation: slideDown 0.3s ease-out; }
-        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .modal-header { font-size: 1.3rem; font-weight: bold; color: var(--accent); border-bottom: 2px solid #fde68a; padding-bottom: 10px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-        .modal-body { font-size: 1.1rem; line-height: 1.8; color: var(--dark); text-align: right; direction: rtl; }
-        .modal-close-btn { margin-top: 20px; width: 100%; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(5px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: white; width: 100%; max-width: 550px; padding: 30px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); position: relative; animation: modalPop 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes modalPop { 0% { transform: scale(0.95) translateY(20px); opacity: 0; } 100% { transform: scale(1) translateY(0); opacity: 1; } }
+        .modal-header { font-size: 1.4rem; font-weight: 800; color: var(--dark); border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+        .modal-body { font-size: 1.15rem; line-height: 1.9; color: #334155; text-align: right; direction: rtl; max-height: 60vh; overflow-y: auto; padding-left: 10px; }
+        .modal-body::-webkit-scrollbar { width: 6px; }
+        .modal-body::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
+        .modal-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        .modal-close-btn { margin-top: 25px; width: 100%; padding: 14px; background: #f1f5f9; color: var(--dark); border: 1px solid #e2e8f0; border-radius: 12px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .modal-close-btn:hover { background: #e2e8f0; color: var(--danger); }
 
-        /* Footer */
-        footer { margin-top: 40px; text-align: center; color: #6b7280; font-size: 0.9rem; border-top: 1px solid #d1d5db; padding-top: 20px; }
-        .designer-name { font-weight: bold; color: var(--primary); font-size: 1.1rem; }
+        /* ---------- تصميم زر التليجرام المحدث ---------- */
+        .telegram-container { margin-bottom: 25px; }
+        .btn-telegram { 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 12px; 
+            background: linear-gradient(135deg, #2AABEE 0%, #229ED9 100%); 
+            color: white; 
+            padding: 16px 20px; 
+            border-radius: 16px; 
+            text-decoration: none; 
+            font-weight: 800; 
+            
+            /* الخط يتغير حجمه بمرونة حسب حجم الشاشة لمنع التكسر */
+            font-size: clamp(0.95rem, 4vw, 1.2rem); 
+            
+            /* هذه الخاصية السحرية تمنع النص من النزول لسطر جديد */
+            white-space: nowrap; 
+            
+            box-shadow: 0 8px 20px rgba(42, 171, 238, 0.3); 
+            transition: var(--transition); 
+            width: 100%; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        .btn-telegram::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%); transform: skewX(-25deg); animation: shine 3s infinite; }
+        @keyframes shine { 0% { left: -100%; } 20% { left: 200%; } 100% { left: 200%; } }
+        .btn-telegram:hover, .btn-telegram:active { transform: translateY(-3px); box-shadow: 0 12px 25px rgba(42, 171, 238, 0.4); color: white; }
+        .btn-telegram i { font-size: 1.5rem; }
+        /* ----------------------------------------------- */
+
+        /* تحسينات الموبايل العامة */
+        @media (max-width: 550px) {
+            .hide-mobile { display: none; }
+            .mini-btn { padding: 10px 14px; }
+            .sticky-test-nav { padding: 8px; border-radius: 14px; top: 5px; }
+            
+            /* تقليل المسافات في زر التليجرام على الشاشات الصغيرة جداً */
+            .btn-telegram {
+                padding: 14px;
+                gap: 8px;
+            }
+            .btn-telegram i { font-size: 1.3rem; }
+        }
+
+        footer { margin-top: 50px; text-align: center; color: var(--text-muted); font-size: 0.95rem; border-top: 2px dashed #e2e8f0; padding-top: 30px; }
+        .designer-name { font-weight: 800; color: var(--primary); font-size: 1.15rem; margin-top: 10px; display: inline-block; background: #f1f5f9; padding: 15px 25px; border-radius: 16px; border: 1px solid #e2e8f0; }
         .contact-info-hidden { display: none; }
+        
         .MathJax { font-size: 1.1em !important; }
         
-                /* تصميم زر التليجرام */
-        .telegram-container { margin-bottom: 20px; }
-        .btn-telegram {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            background: linear-gradient(135deg, #0088cc, #00aaff); /* ألوان التليجرام الرسمية */
-            color: white;
-            padding: 16px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.15rem;
-            box-shadow: 0 4px 6px rgba(0, 136, 204, 0.3);
-            transition: transform 0.3s, box-shadow 0.3s;
-            width: 100%;
-        }
-        .btn-telegram:hover, .btn-telegram:active {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 136, 204, 0.4);
-            color: white;
-        }
-        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; height: 0; } to { opacity: 1; height: auto; } }
+
     </style>
 </head>
 <body>
 
     <header>
         <h1>إدارة المشاريع</h1>
-        <h3>امتحان مشترك - فصل الثاني</h3>
+        <h3>امتحان مشترك - الفصل الثاني</h3>
     </header>
 
     <div class="container">
         <div id="home-view">
             <div class="controls-grid">
-                <button class="btn-main" onclick="loadSection('bank')">📚 بنك الأسئلة (كامل)</button>
-                <button class="btn-main" onclick="loadSection('bank-math')">🧮 بنك المسائل الحسابية (مصنف)</button>
-                <button class="btn-main" onclick="loadSection('test', 125)">📝 اختبار شامل (125 سؤال)</button>
-                <button class="btn-main" onclick="loadSection('test-theory')">📖 اختبار الأسئلة الشرحية</button>
+                <button class="btn-main" onclick="loadSection('bank')">
+                    <i class="fa-solid fa-layer-group"></i> بنك الأسئلة (كامل)
+                </button>
+                <button class="btn-main" onclick="loadSection('bank-math')">
+                    <i class="fa-solid fa-calculator"></i> بنك المسائل الحسابية
+                </button>
+                <button class="btn-main" onclick="loadSection('test', 125)">
+                    <i class="fa-solid fa-file-signature"></i> اختبار شامل (125 سؤال)
+                </button>
+                <button class="btn-main" onclick="loadSection('test-theory')">
+                    <i class="fa-solid fa-book-open-reader"></i> اختبار الأسئلة الشرحية
+                </button>
             </div>
-                        <div class="telegram-container">
+            
+            <div class="telegram-container">
                 <a href="https://t.me/dx3ee" target="_blank" class="btn-telegram">
-                    ✈️ انضم لكروب على قنات تليگرام
+                    <i class="fa-brands fa-telegram"></i> انضم لكروب القناة على تيليجرام
                 </a>
             </div>
 
-
             <div class="custom-test-box">
-                <label>اختبار عشوائي (حدد العدد):</label>
+                <label><i class="fa-solid fa-dice"></i> اختبار عشوائي (حدد العدد):</label>
                 <input type="number" id="random-num" placeholder="مثلاً: 25">
-                <button onclick="startCustomRandom()">ابدأ الاختبار العشوائي</button>
+                <button onclick="startCustomRandom()">
+                    <i class="fa-solid fa-play"></i> ابدأ الاختبار العشوائي
+                </button>
             </div>
 
             <div class="custom-test-box">
-                <label>اختبار نطاق محدد (من سؤال - إلى سؤال):</label>
-                <div style="display: flex; gap: 10px;">
+                <label><i class="fa-solid fa-list-ol"></i> اختبار نطاق محدد (من - إلى):</label>
+                <div style="display: flex; gap: 15px;">
                     <input type="number" id="range-start" placeholder="من (مثال: 1)">
                     <input type="number" id="range-end" placeholder="إلى (مثال: 20)">
                 </div>
-                <button onclick="startCustomRange()">ابدأ اختبار النطاق</button>
+                <button onclick="startCustomRange()" style="margin-top: 15px;">
+                    <i class="fa-solid fa-play"></i> ابدأ اختبار النطاق
+                </button>
             </div>
             
-                   <footer>
-                <p style="margin-bottom: 10px;">تصميم وتطوير:</p>
-                
-                <p class="designer-name" style="line-height: 1.8;">
+            <footer>
+                <p>تصميم وتطوير برمجيات المنصة:</p>
+                <p class="designer-name" style="line-height: 1.9;">
                     طارق احمد سعيد<br>
                     ابراهيم محمود حسين<br>
                     علي حمد صالح
@@ -222,26 +276,36 @@
                     <p>Phone: 07700322891</p>
                 </div>
             </footer>
-
         </div>
 
         <div id="quiz-view">
-            <div class="top-bar">
-                <button class="btn-back" onclick="goHome()">🔙 رجوع للرئيسية</button>
-                <button id="btn-finish-test" class="btn-finish" onclick="finishTest()">🏁 إنهاء الاختبار</button>
+            
+            <div id="sticky-test-nav" class="sticky-test-nav">
+                <button class="mini-btn mini-back" onclick="goHome()">
+                    <i class="fa-solid fa-chevron-right"></i> <span class="hide-mobile">رجوع</span>
+                </button>
+                
+                <div id="score-tracker" class="mini-score">
+                    <span class="hide-mobile" style="color: var(--text-muted); font-size: 0.95rem;">النتيجة: </span>
+                    <div class="score-numbers">
+                        <span id="correct-score" class="score-number">0</span>
+                        <span class="divider">/</span>
+                        <span id="answered-score">0</span>
+                    </div>
+                </div>
+
+                <button id="btn-finish-test" class="mini-btn mini-finish" onclick="finishTest()">
+                    <span class="hide-mobile">إنهاء</span> <i class="fa-solid fa-flag-checkered"></i>
+                </button>
             </div>
             
             <div id="math-filters" class="math-filters-container">
                 <button class="math-filter-btn active-filter" onclick="filterMathCategory('All')">الكل</button>
-                <button class="math-filter-btn" onclick="filterMathCategory('BEP')">نقطة التعادل والربح (BEP)</button>
-                <button class="math-filter-btn" onclick="filterMathCategory('EOQ')">المخزون والكمية (EOQ)</button>
+                <button class="math-filter-btn" onclick="filterMathCategory('BEP')">نقطة التعادل (BEP)</button>
+                <button class="math-filter-btn" onclick="filterMathCategory('EOQ')">المخزون (EOQ)</button>
                 <button class="math-filter-btn" onclick="filterMathCategory('LP')">البرمجة الخطية (LP)</button>
-                <button class="math-filter-btn" onclick="filterMathCategory('Maintenance')">حسابات الصيانة (Maintenance)</button>
+                <button class="math-filter-btn" onclick="filterMathCategory('Maintenance')">الصيانة (Maintenance)</button>
                 <button class="math-filter-btn" onclick="filterMathCategory('Machine')">مقارنة المكائن (Machine)</button>
-            </div>
-
-            <div id="score-tracker" class="score-tracker">
-                النتيجة الحية: <span id="correct-score" class="score-number">0</span> صحيح من أصل <span id="answered-score">0</span> إجابة
             </div>
 
             <div id="questions-container"></div>
@@ -250,15 +314,16 @@
 
     <div id="explain-modal" class="modal-overlay">
         <div class="modal-content">
-            <div class="modal-header">💡 شرح السؤال</div>
+            <div class="modal-header"></div> 
             <div id="modal-text" class="modal-body"></div>
-            <button class="modal-close-btn" onclick="closeModal()">إغلاق الشرح</button>
+            <button class="modal-close-btn" onclick="closeModal()">
+                <i class="fa-solid fa-xmark"></i> إغلاق
+            </button>
         </div>
     </div>
 
     <script>
         
-        // داتا الأسئلة 
         const questionsData = [
             // --- الدفعة الأولى (من 1 إلى 15) ---
             {
@@ -1962,7 +2027,15 @@
         let scoreAnswered = 0;
 
         function updateScoreBoard() {
-            document.getElementById('correct-score').innerText = scoreCorrect;
+            const correctSpan = document.getElementById('correct-score');
+            
+            if(scoreCorrect > parseInt(correctSpan.innerText || 0)) {
+                correctSpan.classList.remove('score-bump');
+                void correctSpan.offsetWidth; 
+                correctSpan.classList.add('score-bump');
+            }
+            
+            correctSpan.innerText = scoreCorrect;
             document.getElementById('answered-score').innerText = scoreAnswered;
         }
 
@@ -1997,8 +2070,8 @@
 
             isTestMode = mode.startsWith('test');
             
-            document.getElementById('score-tracker').style.display = isTestMode ? 'block' : 'none';
-            document.getElementById('btn-finish-test').style.display = isTestMode ? 'block' : 'none';
+            document.getElementById('score-tracker').style.display = isTestMode ? 'flex' : 'none';
+            document.getElementById('btn-finish-test').style.display = isTestMode ? 'flex' : 'none';
             
             if(mode === 'bank-math') {
                 document.getElementById('math-filters').style.display = 'flex';
@@ -2055,8 +2128,8 @@
             document.getElementById('quiz-view').style.display = 'block';
             document.getElementById('math-filters').style.display = 'none';
             isTestMode = true;
-            document.getElementById('score-tracker').style.display = 'block';
-            document.getElementById('btn-finish-test').style.display = 'block';
+            document.getElementById('score-tracker').style.display = 'flex';
+            document.getElementById('btn-finish-test').style.display = 'flex';
             
             scoreCorrect = 0; scoreAnswered = 0; updateScoreBoard();
             currentViewData = questionsData.filter(q => q.id >= start && q.id <= end);
@@ -2069,7 +2142,7 @@
             container.innerHTML = '';
 
             if(currentViewData.length === 0) {
-                container.innerHTML = '<h3 style="text-align:center; padding: 20px;">لا توجد أسئلة في هذا النطاق حالياً.</h3>';
+                container.innerHTML = '<h3 style="text-align:center; padding: 40px; color: #64748b;">لا توجد أسئلة في هذا النطاق حالياً.</h3>';
                 return;
             }
 
@@ -2090,7 +2163,7 @@
                 });
 
                 let disableLogic = isTestMode ? 'disabled' : '';
-                let solveBtn = q.type === 'math' ? `<button class="action-btn btn-solve" id="btn-solve-${q.id}" onclick="toggleSolution(${q.id})" ${disableLogic}>📝 إظهار الحل</button>` : '';
+                let solveBtn = q.type === 'math' ? `<button class="action-btn btn-solve" id="btn-solve-${q.id}" onclick="toggleSolution(${q.id})" ${disableLogic}><i class="fa-solid fa-pen-ruler"></i> إظهار الحل</button>` : '';
 
                 card.innerHTML = `
                     <div class="q-text-container" id="q-container-${q.id}">
@@ -2100,15 +2173,15 @@
                         ${optionsHTML}
                     </ul>
                     <div class="action-buttons">
-                        <button class="action-btn btn-translate" id="btn-trans-${q.id}">🌐 ترجمة (اضغط باستمرار)</button>
-                        <button class="action-btn btn-explain" id="btn-explain-${q.id}" onclick="openExplainModal(${q.id})" ${disableLogic}>💡 الشرح</button>
+                        <button class="action-btn btn-translate" id="btn-trans-${q.id}"><i class="fa-solid fa-language"></i> الترجمة</button>
+                        <button class="action-btn btn-explain" id="btn-explain-${q.id}" onclick="openExplainModal(${q.id})" ${disableLogic}><i class="fa-solid fa-lightbulb"></i> الشرح</button>
                         ${solveBtn}
                     </div>
                     
                     <div class="solution-box" id="sol-box-${q.id}">
-                        <div class="sol-title">المعطيات والمطلوب</div>
+                        <div class="sol-title"><i class="fa-solid fa-clipboard-list"></i> المعطيات والمطلوب</div>
                         <div class="sol-content-ar"><b>المعطيات:</b> <span dir="ltr">${q.givens || ''}</span><br><b>المطلوب:</b> ${q.required || ''}</div>
-                        <div class="sol-title">خطوات الحل</div>
+                        <div class="sol-title"><i class="fa-solid fa-stairs"></i> خطوات الحل</div>
                         <div class="sol-content">${q.steps || ''}</div>
                     </div>
                 `;
@@ -2120,15 +2193,12 @@
             if(window.MathJax) MathJax.typesetPromise();
         }
 
-        // نافذة الشرح المنبثقة
-                function openExplainModal(id) {
+        function openExplainModal(id) {
             const q = currentViewData.find(x => x.id === id);
-            // إعادة عنوان النافذة ليكون "شرح"
-            document.querySelector('#explain-modal .modal-header').innerHTML = '💡 شرح السؤال';
+            document.querySelector('#explain-modal .modal-header').innerHTML = '<i class="fa-solid fa-lightbulb" style="color: var(--accent);"></i> شرح السؤال';
             document.getElementById('modal-text').innerHTML = q.explanation;
             document.getElementById('explain-modal').style.display = 'flex';
         }
-
 
         function closeModal() {
             document.getElementById('explain-modal').style.display = 'none';
@@ -2136,7 +2206,6 @@
 
         function setupTranslationEvents(q) {
             const btn = document.getElementById(`btn-trans-${q.id}`);
-            btn.innerHTML = '🌐 الترجمة'; // تغيير اسم الزر لإزالة كلمة "اضغط باستمرار"
             
             btn.onclick = (e) => {
                 if (e.cancelable) e.preventDefault();
@@ -2144,17 +2213,14 @@
                 const modalHeader = document.querySelector('#explain-modal .modal-header');
                 const modalText = document.getElementById('modal-text');
                 
-                // تغيير عنوان النافذة ليكون "ترجمة"
-                modalHeader.innerHTML = '🌐 ترجمة السؤال والخيارات';
+                modalHeader.innerHTML = '<i class="fa-solid fa-language" style="color: #8b5cf6;"></i> ترجمة السؤال والخيارات';
                 
-                // تجميع السؤال المترجم مع الخيارات المترجمة بتنسيق أنيق
                 let transHtml = `<strong>السؤال:</strong><br>${q.textAr}<br><br><strong>الخيارات:</strong><br><ul style="list-style:none; padding:0;">`;
                 q.optionsAr.forEach(opt => {
-                    transHtml += `<li style="margin-bottom:8px; padding:10px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px;">${opt}</li>`;
+                    transHtml += `<li style="margin-bottom:10px; padding:15px; background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; font-weight:500;">${opt}</li>`;
                 });
                 transHtml += `</ul>`;
                 
-                // عرض الترجمة في النافذة
                 modalText.innerHTML = transHtml;
                 document.getElementById('explain-modal').style.display = 'flex';
             };
@@ -2168,12 +2234,12 @@
 
             if (solBox.style.display === 'block') {
                 solBox.style.display = 'none';
-                btn.innerHTML = '📝 إظهار الحل';
+                btn.innerHTML = '<i class="fa-solid fa-pen-ruler"></i> إظهار الحل';
                 btn.style.backgroundColor = 'var(--success)';
             } else {
                 solBox.style.display = 'block';
-                btn.innerHTML = '🙈 إخفاء الحل';
-                btn.style.backgroundColor = '#6b7280'; 
+                btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> إخفاء الحل';
+                btn.style.backgroundColor = '#64748b'; 
                 
                 options.forEach((opt, idx) => {
                     if(idx !== q.correctIndex) opt.classList.add('hidden');
@@ -2208,8 +2274,9 @@
             if(solveBtn) solveBtn.disabled = false;
         }
         
-                // --- كود إظهار عدد الأسئلة داخل أزرار الأصناف ---
         function showCategoryCounts() {
+            if(typeof questionsData === 'undefined' || questionsData.length === 0) return;
+
             const mathQs = questionsData.filter(q => q.type === 'math');
             const counts = {
                 'All': mathQs.length,
@@ -2221,18 +2288,20 @@
             };
 
             document.querySelectorAll('.math-filter-btn').forEach(btn => {
+                if(btn.querySelector('.q-badge')) return; 
+
                 const match = btn.getAttribute('onclick').match(/'([^']+)'/);
                 if (match) {
                     const cat = match[1];
                     if (counts[cat] !== undefined) {
-                        btn.innerHTML += ` <span style="background:#fffff; 
-                        color: white; padding:0px 12px; border-radius:10px; font-size:0.70rem; margin-right:0px; font-weight:bold;">${counts[cat]}</span>`;
+                        const originalText = btn.innerHTML;
+                        btn.innerHTML = `<span class="q-badge">${counts[cat]}</span> <span class="btn-txt">${originalText}</span>`;
                     }
                 }
             });
         }
-        // تشغيل العداد فور فتح التطبيق
-        showCategoryCounts();
+        
+        setTimeout(showCategoryCounts, 500); 
 
     </script>
 </body>
