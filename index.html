@@ -722,12 +722,12 @@
             },            
             {
                 id: 36,
-                text: "Suppose that the demand for a product (D) is 6000 per year. The order cost (Co) is 60$ and the inventory holding cost (Ch) is 2$ per item per month. Assuming shortages are not allowed, Then the economic order quantity (EOQ) is:",
+                text: "Suppose that the demand for a product (D) is 6000 per year. The order cost (Co) is 60$ and the inventory holding cost (Ch) is 2$ per item per year. Assuming shortages are not allowed, Then the economic order quantity (EOQ) is:",
                 textAr: "الطلب السنوي 6000. تكلفة الطلب 60$. تكلفة الاحتفاظ 2$ شهرياً. بدون عجز، الكمية الاقتصادية EOQ هي:",
                 options: ["A- 600 units", "B- 400 units", "C- 900 units", "D- 300 units"],
                 optionsAr: ["أ- 600 وحدة", "ب- 400 وحدة", "ج- 900 وحدة", "د- 300 وحدة"],
                 correctIndex: 0, type: "math", category: "EOQ",
-                explanation: "تنبيه هام جداً: الأستاذ وضع تكلفة الاحتفاظ (Ch) بصيغة 'per month' ولكنه خطأً عوضها مباشرة برقم 2 في القانون دون أن يضربها في 12 لتصبح سنوية. سنحل بناءً على طريقة الأستاذ لاستخراج الخيار المطابق بالملزمة.",
+                explanation: "نموذج الكمية الاقتصادية للطلب (EOQ)؛ والغرض منه هو تحديد أقل كمية طلب ممكنة تضمن تلبية احتياجاتك مع تقليل التكلفة الإجمالية (تكلفة الطلب + تكلفة التخزين) إلى أدنى حد.",
                 givens: "D = 6000 , C_o = 60 , C_h = 2",
                 required: "الكمية الاقتصادية (EOQ)",
                 steps: "التعويض بقانون EOQ (بطريقة الملزمة):<br>\\[ EOQ = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\]\n\\[ EOQ = \\sqrt{\\frac{2 \\cdot 6000 \\cdot 60}{2}} \\]\n\\[ EOQ = \\sqrt{360,000} = 600 \\text{ units} \\]"
@@ -1011,55 +1011,65 @@
                 steps: "التعويض:<br>\\[ TC = \\sqrt{2 \\cdot D \\cdot C_o \\cdot C_h} \\]\n\\[ TC = \\sqrt{2 \\cdot 500 \\cdot 20 \\cdot 5} \\]\n\\[ TC = \\sqrt{100,000} \\approx 316.227 \\approx 316.22 \\$ \\]"
             },
             
-            // --- الدفعة الخامسة (من 61 إلى 75) ---
-            {
-                id: 61,
-                text: "Suppose that the Demand for a product is D=400 units per month and the items are withdrawn at a constant rate. The setup cost each time is undertaken to replenish inventory is Co=30$ The inventory holding cost is Ch=0.5$ per item per month. Assume that shortage is allowed with Cs=1.5$, Then EOQ (unit) is:",
-                textAr: "الطلب 400 وحدة شهرياً. تكلفة الطلب 30$. تكلفة الاحتفاظ 0.5$ شهرياً. تكلفة العجز 1.5$. ما هي الكمية الاقتصادية (EOQ)؟",
-                options: ["A- 438 unit", "B- 450 unit", "C- 311 unit", "D- 314 unit"],
-                optionsAr: ["أ- 438 وحدة", "ب- 450 وحدة", "ج- 311 وحدة", "د- 314 وحدة"],
-                correctIndex: 0, type: "math", category: "EOQ",
-                explanation: "🚨 تنبيه خطير للامتحان: يوجد خطأ علمي فادح في طريقة حل الأستاذ لهذا السؤال بالملزمة. فقد قام بتحويل الطلب إلى سنوي (4800)، ثم استخدم (Cs) بدلاً من (Ch) في المقام، وتجاهل الجزء الثاني من قانون العجز تماماً! سنكتب لك خطواته الخاطئة لتتطابق مع خياره في الامتحان.",
-                givens: "D = 400/month , C_o = 30\\$ , C_h = 0.5\\$ , C_s = 1.5\\$",
-                required: "الكمية الاقتصادية (EOQ) - بطريقة الأستاذ",
-                steps: "طريقة الأستاذ لاستخراج الخيار A:<br>1. تحويل الطلب لسنوي: \\( D = 400 \\times 12 = 4800 \\)<br>2. تطبيق القانون بخطأ (القسمة على Cs بدلاً من Ch وتجاهل جذر العجز):<br>\\[ Q = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_s}} \\]\n\\[ Q = \\sqrt{\\frac{2 \\cdot 4800 \\cdot 30}{1.5}} \\]\n\\[ Q = \\sqrt{\\frac{288000}{1.5}} = \\sqrt{192000} \\approx 438.17 \\text{ units} \\]"
-            },
-            {
-                id: 62,
-                text: "For the same problem in Q.61. the maximum inventory Imax is:",
-                textAr: "لنفس مسألة السؤال السابق (Q.61). الحد الأقصى للمخزون (Imax) هو:",
-                options: ["A- 150 unit", "B- 110 unit", "C- 113 unit", "D- 112 unit"],
-                optionsAr: ["أ- 150 وحدة", "ب- 110 وحدة", "ج- 113 وحدة", "د- 112 وحدة"],
-                correctIndex: 1, type: "math", category: "EOQ",
-                explanation: "🚨 خطأ آخر للأستاذ: في هذا السؤال يطلب الحد الأقصى للمخزون (Imax)، لكنه استخدم قانون (العجز المسموح S) لاستخراج الناتج! سنعوض بقانون S بدلاً من Imax لنصل للرقم 110.",
-                givens: "Q = 438.17 , C_h = 0.5 , C_s = 1.5",
-                required: "الحد الأقصى للمخزون (Imax) - خطأ",
-                steps: "استخدام قانون العجز S بدلاً من Imax:<br>\\[ \\text{Formula used: } S = Q \\cdot \\left( \\frac{C_h}{C_h + C_s} \\right) \\]\n\\[ S = 438.17 \\cdot \\left( \\frac{0.5}{0.5 + 1.5} \\right) \\]\n\\[ S = 438.17 \\cdot \\left( \\frac{0.5}{2.0} \\right) \\]\n\\[ S = 438.17 \\cdot 0.25 = 109.54 \\approx 110 \\text{ units} \\]"
-            },
-            {
-                id: 63,
-                text: "For the same problem in Q.61 the time between orders is:",
-                textAr: "لنفس مسألة (Q.61) الوقت الفاصل بين الطلبيات (بالأشهر) هو:",
-                options: ["A- 1.231", "B- 1.121", "C- 1.022", "D- 1.095"],
-                optionsAr: ["أ- 1.231 شهر", "ب- 1.121 شهر", "ج- 1.022 شهر", "د- 1.095 شهر"],
-                correctIndex: 3, type: "math", category: "EOQ",
-                explanation: "بما أن الطلب معطى شهرياً (400)، فإن قسمة الكمية على الطلب ستعطينا الوقت الفاصل بالأشهر.",
-                givens: "Q = 438.17 , D_{monthly} = 400",
-                required: "الوقت الفاصل (Time T)",
-                steps: "حساب الوقت بالأشهر:<br>\\[ T = \\frac{Q}{D_{monthly}} \\]\n\\[ T = \\frac{438.17}{400} \\approx 1.095 \\text{ months} \\]"
-            },
-            {
-                id: 64,
-                text: "For the same problem in Q.61 the order frequency is:",
-                textAr: "لنفس مسألة (Q.61) تكرار الطلب (عدد الطلبيات شهرياً) هو:",
-                options: ["A- 0.913", "B- 0.121", "C- 1.022", "D- 0.095"],
-                optionsAr: ["أ- 0.913", "ب- 0.121", "ج- 1.022", "د- 0.095"],
-                correctIndex: 0, type: "math", category: "EOQ",
-                explanation: "تكرار الطلب (N) هو مقلوب الوقت الفاصل، أي نقسم الطلب الشهري على كمية الطلب.",
-                givens: "D_{monthly} = 400 , Q = 438.17",
-                required: "تكرار الطلب (Frequency N)",
-                steps: "حساب التكرار:<br>\\[ N = \\frac{D_{monthly}}{Q} \\]\n\\[ N = \\frac{400}{438.17} \\approx 0.9128 \\approx 0.913 \\text{ orders} \\]"
-            },
+            // --- الدفعة الخامسة (من 61 إلى 75) --
+    {
+        "id": 61,
+        "text": "Suppose that the Demand for a product is D=400 units per month and the items are withdrawn at a constant rate. The setup cost each time is undertaken to replenish inventory is Co=30$ The inventory holding cost is Ch=0.5$ per item per month. Assume that shortage is allowed with Cs=1.5$, Then EOQ (unit) is:",
+        "textAr": "الطلب 400 وحدة شهرياً. تكلفة الطلب 30$. تكلفة الاحتفاظ 0.5$ شهرياً. تكلفة العجز 1.5$. ما هي الكمية الاقتصادية (EOQ)؟",
+        "options": ["A- 253 unit", "B- 450 unit", "C- 311 unit", "D- 314 unit"],
+        "optionsAr": ["أ- 253 وحدة", "ب- 450 وحدة", "ج- 311 وحدة", "د- 314 وحدة"],
+        "correctIndex": 0,
+        "type": "math",
+        "category": "EOQ",
+        "explanation": "لحساب الكمية الاقتصادية للطلب مع السماح بالعجز، نستخدم القانون الذي يدمج تكلفة الاحتفاظ وتكلفة العجز معاً للحصول على أدق نتيجة.",
+        "givens": "D = 400/month , C_o = 30\\$ , C_h = 0.5\\$ , C_s = 1.5\\$",
+        "required": "الكمية الاقتصادية (EOQ)",
+        "steps": "القانون:<br>\\[ Q = \\sqrt{\\frac{2 \\cdot D \\cdot C_o}{C_h}} \\cdot \\sqrt{\\frac{C_h + C_s}{C_s}} \\]<br>التعويض:<br>\\[ Q = \\sqrt{\\frac{2 \\cdot 400 \\cdot 30}{0.5}} \\cdot \\sqrt{\\frac{0.5 + 1.5}{1.5}} \\]<br>\\[ Q = \\sqrt{48000} \\cdot \\sqrt{\\frac{2}{1.5}} = \\sqrt{64000} \\approx 252.98 \\approx 253 \\text{ units} \\]"
+    },
+    {
+        "id": 62,
+        "text": "For the same problem in Q.61. the maximum inventory Imax is:",
+        "textAr": "لنفس مسألة السؤال السابق (Q.61). الحد الأقصى للمخزون (Imax) هو:",
+        "options": ["A- 110 unit", "B- 190 unit", "C- 113 unit", "D- 112 unit"],
+        "optionsAr": ["أ- 110 وحدة", "ب- 190 وحدة", "ج- 113 وحدة", "د- 112 وحدة"],
+        "correctIndex": 1,
+        "type": "math",
+        "category": "EOQ",
+        "explanation": "لحساب الحد الأقصى للمخزون، نضرب الكمية الاقتصادية التي استخرجناها في السؤال السابق بنسبة تكلفة العجز إلى مجموع تكلفتي العجز والاحتفاظ.",
+        "givens": "Q = 252.98 , C_h = 0.5\\$ , C_s = 1.5\\$",
+        "required": "الحد الأقصى للمخزون (Imax)",
+        "steps": "القانون:<br>\\[ I_{max} = Q \\cdot \\left( \\frac{C_s}{C_h + C_s} \\right) \\]<br>التعويض:<br>\\[ I_{max} = 252.98 \\cdot \\left( \\frac{1.5}{0.5 + 1.5} \\right) \\]<br>\\[ I_{max} = 252.98 \\cdot 0.75 \\approx 189.7 \\approx 190 \\text{ units} \\]"
+    },
+    {
+        "id": 63,
+        "text": "For the same problem in Q.61 the time between orders is:",
+        "textAr": "لنفس مسألة (Q.61) الوقت الفاصل بين الطلبيات (بالأشهر) هو:",
+        "options": ["A- 1.231", "B- 1.121", "C- 0.632", "D- 1.095"],
+        "optionsAr": ["أ- 1.231 شهر", "ب- 1.121 شهر", "ج- 0.632 شهر", "د- 1.095 شهر"],
+        "correctIndex": 2,
+        "type": "math",
+        "category": "EOQ",
+        "explanation": "الوقت الفاصل بين الطلبيات يُحسب ببساطة عن طريق قسمة الكمية الاقتصادية للطلب على معدل الطلب خلال الفترة (هنا الفترة شهرية).",
+        "givens": "Q = 252.98 , D_{monthly} = 400",
+        "required": "الوقت الفاصل (Time T)",
+        "steps": "القانون:<br>\\[ T = \\frac{Q}{D} \\]<br>التعويض:<br>\\[ T = \\frac{252.98}{400} \\approx 0.632 \\text{ months} \\]"
+    },
+    {
+        "id": 64,
+        "text": "For the same problem in Q.61 the order frequency is:",
+        "textAr": "لنفس مسألة (Q.61) تكرار الطلب (عدد الطلبيات شهرياً) هو:",
+        "options": ["A- 0.913", "B- 0.121", "C- 1.022", "D- 1.581"],
+        "optionsAr": ["أ- 0.913", "ب- 0.121", "ج- 1.022", "د- 1.581"],
+        "correctIndex": 3,
+        "type": "math",
+        "category": "EOQ",
+        "explanation": "تكرار الطلب (عدد الطلبيات) هو المقلوب للوقت الفاصل، ويُحسب بقسمة الطلب الشهري على الكمية الاقتصادية.",
+        "givens": "D_{monthly} = 400 , Q = 252.98",
+        "required": "تكرار الطلب (Frequency N)",
+        "steps": "القانون:<br>\\[ N = \\frac{D}{Q} \\]<br>التعويض:<br>\\[ N = \\frac{400}{252.98} \\approx 1.581 \\text{ orders/month} \\]"
+    },
+  
+      
             {
                 id: 65,
                 text: "Material is used as Maximum usage 50 unit/weeks and the Maximum re-order period is 5 weeks, then the Ordering point or re-order level is:",
